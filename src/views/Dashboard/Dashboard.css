@@ -1,0 +1,132 @@
+/* Home top card */
+
+.HomeTop {
+    padding: 50px 0px;
+}
+
+.HomeCard {
+    background-color: #FFFFFF;
+    /* background: linear-gradient(195deg, rgb(238, 214, 240), rgb(248, 247, 248)); */
+    border-radius: 10px;
+    padding: 25px 15px 25px;
+    position: relative;
+    box-shadow: 0px 0px 5px 0px rgb(155 153 153 / 50%);
+}
+
+.HomeCardViewbtn {
+    border: none;
+    outline: 0;
+    width: 80px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #066DE6;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 15px auto 0px auto;
+}
+
+.HomeCardViewbtn:hover {
+    color: #fff;
+}
+
+.HomeCardHead {
+    color: rgb(44, 43, 43);
+    font-size: 15px;
+    margin-bottom: 10px;
+}
+
+.HomeCardPara {
+    color: #000;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.cardIconDiv {
+    position: absolute;
+    top: -15px;
+    right: 25px;
+    width: 60px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+}
+
+.cardIconDiv i {
+    color: #fff;
+    font-size: 18px;
+}
+
+.homecardLink {
+    color: #066DE6;
+    display: flex;
+    justify-content: end;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.homecardLink:hover {
+    color: #066DE6;
+    text-decoration: none;
+}
+
+/******chartBox_area***/
+
+.chartBox_area {
+    width: 100%;
+    height: auto;
+    padding: 10px 10px;
+    /* background-color: #fff; */
+    box-shadow: 0px 0px 5px 0px rgb(155 153 153 / 50%);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    background: linear-gradient(195deg, #daeeec, #FFFFFF);
+}
+
+.piechartsBox_area {
+    width: 100%;
+    height: auto;
+    padding: 10px 10px;
+    /* background-color: #fff; */
+    background: linear-gradient(195deg, #daeeec, #FFFFFF) !important;
+    box-shadow: 0px 0px 5px 0px rgb(155 153 153 / 50%);
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+
+
+
+
+
+
+
+/* Responsive */
+
+@media (max-width: 1199px) {
+    .cardIconDiv {
+        width: 45px;
+        height: 35px;
+    }
+
+    .cardIconDiv i {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 767px) {
+    .HomeCard {
+        margin: 15px 0px;
+    }
+}
+
+@media (max-width: 480px) {
+    .apexcharts-canvas {
+        margin: 0 auto;
+    }
+}
