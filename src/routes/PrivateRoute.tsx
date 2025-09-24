@@ -1,8 +1,15 @@
 import React from "react";
+import { useAppSelector } from "@/redux/store";
+import { Navigate, Outlet } from "react-router-dom";
 
 const PrivateRoute: React.FC = () => {
+  const { isLoggedIn } = useAppSelector(state => state.auth);
   return (
-    <div>PrivateRoute</div>
+    isLoggedIn ?
+      <>
+        <Outlet />
+      </> :
+      <Navigate to={"/login"} />
   );
 };
 

@@ -3,25 +3,28 @@
 import type { CommonResponseType } from "@/@types/index";
 import Axios from "./Axios";
 
-const getRequest = async (url: string, config: object = {}): Promise<CommonResponseType> => {
+// Update other methods similarly with generic types
+const getRequest = async <T = CommonResponseType>(url: string, config: object = {}): Promise<T> => {
     try {
         const response = await Axios.get(url, config);
         return response?.data;
     } catch (error: any) {
-        return error?.data;
+        throw error?.response?.data || error?.data || error;
     }
 };
 
-const postRequest = async (url: string, data: object = {}, config: object = {}): Promise<CommonResponseType> => {
+const postRequest = async <T = CommonResponseType>(url: string, data: object = {}, config: object = {}): Promise<T> => {
     try {
         const response = await Axios.post(url, data, config);
         return response?.data;
     } catch (error: any) {
-        return error?.data;
+        // For proper error handling with rejectWithValue, throw the error
+        // so it can be caught by rejectWithValue in the thunk
+        throw error?.response?.data || error?.data || error;
     }
 };
 
-const putRequest = async (url: string, data: object = {}, config: object = {}): Promise<CommonResponseType> => {
+const putRequest = async <T = CommonResponseType>(url: string, data: object = {}, config: object = {}): Promise<T> => {
     try {
         const response = await Axios.put(url, data, config);
         return response?.data;
@@ -30,7 +33,7 @@ const putRequest = async (url: string, data: object = {}, config: object = {}): 
     }
 };
 
-const patchRequest = async (url: string, data: object = {}, config: object = {}): Promise<CommonResponseType> => {
+const patchRequest = async <T = CommonResponseType>(url: string, data: object = {}, config: object = {}): Promise<T> => {
     try {
         const response = await Axios.patch(url, data, config);
         return response?.data;
@@ -53,10 +56,9 @@ const patchRequest = async (url: string, data: object = {}, config: object = {})
 //     }
 // };
 
-const deleteRequest = async (url: string, data: object = {}, config: object = {}): Promise<CommonResponseType> => {
+const deleteRequest = async <T = CommonResponseType>(url: string, data: object = {}, config: object = {}): Promise<T> => {
     try {
         // console.log(data);
-
         const response = await Axios.delete(url, { ...config, data });
         return response?.data;
     } catch (error: any) {
@@ -64,10 +66,12 @@ const deleteRequest = async (url: string, data: object = {}, config: object = {}
     }
 };
 
-export {
+const HttpClients = {
     getRequest,
     postRequest,
     putRequest,
     deleteRequest,
     patchRequest,
 };
+
+export default HttpClients;

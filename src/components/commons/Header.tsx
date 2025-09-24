@@ -1,10 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 // import profileP from "../Images/profile-pic.png";
 import DefaultProfile from "@/components/commons/DefaultProfile";
+import { useAppDispatch, useAppSelector } from "@/redux/store";
 // import { logoutCleanUp } from "../utils/logoutCleanUp";
 // import LogoutModal from "../components/modal/LogoutModal";
+import LogoutModal from "@/components/modals/LogoutModal";
+import { logoutUser } from "@/redux/Authentication/authSlice";
 
 interface UserData {
     email?: string;
@@ -13,17 +16,22 @@ interface UserData {
 
 const Header = () => {
     const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
-    // const navigate = useNavigate();
+    const { userData } = useAppSelector(state => state?.auth);
+    const dispatch = useAppDispatch();
+
+    const navigate = useNavigate();
 
     const toggleLogoutModal = (): void => {
         setShowLogoutModal(!showLogoutModal);
     };
 
-    // const handleLogout = (): void => {
-    //     toggleLogoutModal();
-    //     // logoutCleanUp();
-    //     navigate("/login");
-    // };
+    const handleLogout = (): void => {
+        toggleLogoutModal();
+        dispatch(logoutUser());
+
+        // logoutCleanUp();
+        navigate("/login");
+    };
 
     // Safely get user data from localStorage
     const getUserEmail = (): string => {
@@ -74,7 +82,7 @@ const Header = () => {
                         <div className="Accountdetails">
                             <div className="profile_pic">
                                 {/* <img src={profileP} className="img-fluid" alt="user" /> */}
-                                <DefaultProfile name={"Prithwijit Banerjee" as string} width={40} />
+                                <DefaultProfile name={userData?.name || "Anonymous" as string} width={40} />
                             </div>
                             <div className="namearea">
                                 <div className="dropdown">
@@ -87,7 +95,7 @@ const Header = () => {
                                         aria-haspopup="true"
                                         aria-expanded="false"
                                     >
-                                        <strong>Hello Admin</strong>
+                                        <strong>Hello {userData?.name?.split(" ")?.[0] || "Anonymous"}</strong>
                                         <span>{userEmail}</span>
                                     </Link>
                                     <div
@@ -112,12 +120,12 @@ const Header = () => {
             </section>
             <Sidebar />
 
-            {/* {showLogoutModal && (
-                <LogoutModal 
-                    toggleLogoutModal={toggleLogoutModal} 
-                    handleLogout={handleLogout} 
+            {showLogoutModal && (
+                <LogoutModal
+                    toggleLogoutModal={toggleLogoutModal}
+                    handleLogout={handleLogout}
                 />
-            )} */}
+            )}
         </>
     );
 };

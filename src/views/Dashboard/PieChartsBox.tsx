@@ -39,9 +39,6 @@ const PieChartsBox = () => {
         <>
             <section
                 className='piechartsBox_area'
-                style={{
-                    background: "linear-gradient(195deg, rgb(238, 214, 240), rgb(248, 247, 248))"
-                }}
             >
                 <div id="chart">
                     <ReactApexChart

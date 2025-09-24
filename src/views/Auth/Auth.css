@@ -299,3 +299,29 @@
         gap: 15px;
     }
 }
+
+
+/* Error styling */
+.input-group .error {
+    border-color: #ff4757;
+}
+
+.input-underline.error {
+    background-color: #ff4757;
+}
+
+.error-message {
+    color: #ff4757;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+.btn-submit.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-submit:disabled:hover .fill-container {
+    width: 0%;
+}

@@ -15,5 +15,5 @@ export type CommonResponseType<T = unknown> = {
 };
 
 export type CommonPropsType = {
-    children: ReactNode
+    children: ReactNode,
 }

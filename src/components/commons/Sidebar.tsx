@@ -1,23 +1,27 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import logo from "@/images/Employee_JOB_Image_Logo.jpg";
 // import LogoutModal from "../components/modal/LogoutModal";
 // import { logoutCleanUp } from "../utils/logoutCleanUp";
+import LogoutModal from "@/components/modals/LogoutModal";
+import { useAppDispatch } from "@/redux/store";
+import { logoutUser } from "@/redux/Authentication/authSlice";
 
 function Sidebar() {
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
+    const dispatch = useAppDispatch();
 
     const toggleLogoutModal = (): void => {
         setShowLogoutModal(!showLogoutModal);
     };
 
-    // const handleLogout = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-    //     e.preventDefault();
-    //     toggleLogoutModal();
-    //     // logoutCleanUp();
-    //     navigate("/login");
-    // };
+    const handleLogout = (): void => {
+        toggleLogoutModal();
+        // logoutCleanUp();
+        dispatch(logoutUser());
+        navigate("/login");
+    };
 
     const handlClick = (): void => {
         const sidebar = document.querySelector(".sidebarwrap");
@@ -36,7 +40,7 @@ function Sidebar() {
 
                     <div className="logo_area" style={{ borderBottom: "1px solid black", borderRadius: 0 }}>
                         <div className="logo p-2" style={{ backgroundColor: "transparent", borderRadius: "10px", color: '#AF67FF', fontWeight: 600 }}>
-                            <img src={logo} alt="No Image ..." width={50} height={50}/>
+                            <img src={logo} alt="No Image ..." width={50} height={50} />
                         </div>
                     </div>
                 </div>
@@ -52,7 +56,7 @@ function Sidebar() {
                             </NavLink>
                         </li>
 
-                        {/* Category */}
+                        {/* Role */}
                         <li className="menuline">
                             <div className="menu-head" id="sidemenuhead6">
                                 <Link to="#"
@@ -62,8 +66,8 @@ function Sidebar() {
                                     aria-expanded="true"
                                     aria-controls="sidemenu6"
                                 >
-                                    <i className="fa-solid fa-tags"></i>
-                                    <span>Category</span>
+                                    <i className="fa-solid fa-user-shield"></i>
+                                    <span>Role</span>
                                 </Link>
                             </div>
                             <div
@@ -73,14 +77,14 @@ function Sidebar() {
                                 data-parent="#sidemenu"
                             >
                                 <ul className="Submenu">
-                                    <li><NavLink to="/category" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Category</NavLink></li>
-                                    <li><NavLink to="/add-category" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Category</NavLink></li>
+                                    <li><NavLink to="/role/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Role</NavLink></li>
+                                    <li><NavLink to="/role/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Role</NavLink></li>
                                 </ul>
                             </div>
                         </li>
 
                         {/***Menu 2 For Logo ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead1">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -107,7 +111,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 3 For Theme ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead2">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -134,7 +138,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 4 For Partner Logo ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead3">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -161,7 +165,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 5 For Badge ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead4">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -188,7 +192,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 6 For Pilliar ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead5">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -215,7 +219,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 7 For Features ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead6">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -242,7 +246,7 @@ function Sidebar() {
                         </li>
 
                         {/***Menu 8 For Accomodation ***/}
-                        <li className="menuline">
+                        <li className="menuline d-none">
                             <div className="menu-head" id="sidemenuhead6">
                                 <Link to="#"
                                     className="btn btn-header-link"
@@ -282,7 +286,9 @@ function Sidebar() {
             </section >
 
             {/* Logout Modal */}
-            {/* {showLogoutModal && <LogoutModal toggleLogoutModal={toggleLogoutModal} handleLogout={handleLogout} />} */}
+            {showLogoutModal && <LogoutModal
+                toggleLogoutModal={toggleLogoutModal}
+                handleLogout={handleLogout} />}
         </>
     );
 };

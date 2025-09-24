@@ -85,15 +85,16 @@
     box-shadow: 0px 0px 5px 0px rgb(155 153 153 / 50%);
     border-radius: 12px;
     margin-bottom: 15px;
-    background: linear-gradient(195deg, #daeeec, #FFFFFF);
+    /* background: linear-gradient(195deg, #daeeec, #FFFFFF); */
+    background-color: #fff;
 }
 
 .piechartsBox_area {
     width: 100%;
     height: auto;
     padding: 10px 10px;
-    /* background-color: #fff; */
-    background: linear-gradient(195deg, #daeeec, #FFFFFF) !important;
+    background-color: #fff;
+    /* background: linear-gradient(195deg, #daeeec, #FFFFFF); */
     box-shadow: 0px 0px 5px 0px rgb(155 153 153 / 50%);
     border-radius: 12px;
     margin-bottom: 15px;
