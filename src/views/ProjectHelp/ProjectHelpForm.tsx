@@ -1,6 +1,6 @@
-import type { RoleInputType } from "@/@types/role";
+import type { ProjectHelpInpType } from "@/@types/projectHelp";
 import Loader from "@/components/commons/Loader";
-import { addRole, getRoleById, updateRole } from "@/redux/Roles/roleSlice";
+import { addProjectHelp, getProjectHelpById, updateProjectHelp } from "@/redux/ProjectHelp/projectHelpSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { STATUES } from "@/utils/Status";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
@@ -8,41 +8,43 @@ import toast from "react-hot-toast";
 
 import { useNavigate, useParams } from "react-router-dom";
 
-const INITIAL_FORM_DATA: RoleInputType = {
-    role: "",
-}
+const INITIAL_FORM_DATA: ProjectHelpInpType = {
+    data: "",
+    tag: "",
+};
 
-const RoleForm = () => {
+const ProjectHelpForm = () => {
     const navigate = useNavigate();
     const { isEdit, id } = useParams<{ isEdit?: string; id?: string }>();
 
-    const [formData, setFormData] = useState<RoleInputType>(INITIAL_FORM_DATA);
+    const [formData, setFormData] = useState<ProjectHelpInpType>(INITIAL_FORM_DATA);
 
     const [loading, setLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
-    const { status, role: roleData } = useAppSelector(state => state?.role);
+    const { status, projectHelp } = useAppSelector(state => state?.projectHelp);
 
     useEffect(() => {
         if (isEdit && id) {
             setLoading(true);
-            dispatch(getRoleById(+id)).then(() => {
+            dispatch(getProjectHelpById(id)).then(() => {
                 setLoading(false);
             });
         }
     }, [isEdit, id, dispatch]);
 
     useEffect(() => {
-        if (isEdit && roleData) {
+        if (isEdit && projectHelp) {
             setFormData({
-                role: (roleData as RoleInputType)?.roleName ?? "",
-            } as RoleInputType);
+                data: (projectHelp as ProjectHelpInpType)?.data ?? "",
+                tag: (projectHelp as ProjectHelpInpType)?.tag ?? "",
+            } as ProjectHelpInpType);
         }
-    }, [isEdit, roleData]);
+    }, [isEdit, projectHelp]);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
         setFormData(prev => ({
             ...prev,
-            role: e.target.value,
+            [e.target.name]: e.target.value,
         }));
     };
 
@@ -51,11 +53,15 @@ const RoleForm = () => {
         try {
             e.preventDefault();
 
-            if (!formData.role) {
-                toast.error("Please Enter Role Name");
+            if (!formData.data) {
+                toast.error("Please Enter Data");
                 return;
             }
-            dispatch(addRole(formData));
+            if (!formData.tag) {
+                toast.error("Please Enter tag");
+                return;
+            }
+            dispatch(addProjectHelp(formData));
 
             // Reset formData
             setFormData(INITIAL_FORM_DATA);
@@ -74,20 +80,30 @@ const RoleForm = () => {
                 toast.error("Invalid Role ID");
                 return;
             }
+            if (!formData.data) {
+                toast.error("Invalid Data");
+                return;
+            }
+            if (!formData.tag) {
+                toast.error("Invalid tag");
+                return;
+            }
 
-            dispatch(updateRole({
-                id: +id,
-                role: formData?.role || "",
+            dispatch(updateProjectHelp({
+                id,
+                data: formData.data,
+                tag: formData.tag,
             }));
-            navigate("/role/view");
+            setFormData(INITIAL_FORM_DATA);
+            navigate("/projectHelp/view");
         } catch (error: any) {
             toast.error(error?.message || "Something went wrong!!!");
         }
     };
 
-    const handleSearch = (e: FormEvent): void => {
-        e.preventDefault();
-        navigate("/role/view");
+    const handleSearch = (e: FormEvent) => {
+         e.preventDefault();
+         navigate("/projectHelp/view");
     };
 
     return (
@@ -98,21 +114,35 @@ const RoleForm = () => {
                 <section className="piechartsBox_area">
                     {!isEdit ? (
                         <div>
-                            <h4 className='text-center' style={{ marginBottom: '20px' }}>
-                                Add User Role
+                            <h4 className='text-center' style={{ marginBottom: "20px" }}>
+                                Add Project Help
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
-                                    {/* Category Dropdown */}
+                                    {/*  Data */}
                                     <div className="form-group mb-3">
-                                        <label htmlFor="category">Role Name</label>
+                                        <label htmlFor="category">Data</label>
                                         <input
                                             type="text"
                                             id="image"
-                                            name="image"
+                                            name="data"
                                             className="form-control"
                                             accept="image/*"
-                                            value={formData.role}
+                                            value={formData.data}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    {/*  Tag */}
+                                    <div className="form-group mb-3">
+                                        <label htmlFor="category">Tag</label>
+                                        <input
+                                            type="text"
+                                            id="image"
+                                            name="tag"
+                                            className="form-control"
+                                            accept="image/*"
+                                            value={formData.tag}
                                             onChange={handleInputChange}
                                             required
                                         />
@@ -122,7 +152,7 @@ const RoleForm = () => {
                                     gap: 10
                                 }}>
                                     <button type='submit' className='btn btn-outline-primary w-25'>
-                                        Add Role
+                                        Add Project Help
                                     </button>
                                     <button type='button' className='btn btn-outline-danger w-25' onClick={handleSearch}>
                                         Search
@@ -139,20 +169,34 @@ const RoleForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Role
+                                Update Project Help
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
-                                    {/* Category Dropdown */}
+                                    {/*  Data */}
                                     <div className="form-group mb-3">
-                                        <label htmlFor="category">Role Name</label>
+                                        <label htmlFor="category">Data</label>
                                         <input
                                             type="text"
                                             id="image"
-                                            name="image"
+                                            name="data"
                                             className="form-control"
                                             accept="image/*"
-                                            value={formData.role}
+                                            value={formData.data}
+                                            onChange={handleInputChange}
+                                            required
+                                        />
+                                    </div>
+                                    {/*  Tag */}
+                                    <div className="form-group mb-3">
+                                        <label htmlFor="category">Tag</label>
+                                        <input
+                                            type="text"
+                                            id="image"
+                                            name="tag"
+                                            className="form-control"
+                                            accept="image/*"
+                                            value={formData.tag}
                                             onChange={handleInputChange}
                                             required
                                         />
@@ -160,7 +204,7 @@ const RoleForm = () => {
                                 </div>
                                 <div className='d-flex justify-content-center mt-5'>
                                     <button type='submit' className='btn btn-outline-success w-25'>
-                                        Update Role
+                                        Update Project Help
                                     </button>
                                 </div>
                             </form>
@@ -172,4 +216,4 @@ const RoleForm = () => {
     );
 };
 
-export default RoleForm;
+export default ProjectHelpForm;

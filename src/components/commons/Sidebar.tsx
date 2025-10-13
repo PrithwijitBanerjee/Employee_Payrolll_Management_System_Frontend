@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import logo from "@/images/Employee_JOB_Image_Logo.jpg";
 // import LogoutModal from "../components/modal/LogoutModal";
 // import { logoutCleanUp } from "../utils/logoutCleanUp";
 import LogoutModal from "@/components/modals/LogoutModal";
 import { useAppDispatch } from "@/redux/store";
 import { logoutUser } from "@/redux/Authentication/authSlice";
+import type { boolean } from "yup";
 
 function Sidebar() {
+    const location = useLocation();
     const navigate = useNavigate();
     const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
     const dispatch = useAppDispatch();
@@ -28,6 +30,10 @@ function Sidebar() {
         if (sidebar) {
             sidebar.classList.remove("show");
         }
+    };
+
+    const isClientsActive = (path: string): boolean => {
+        return location.pathname.startsWith("/" + path.split("/")[1]);
     };
 
     return (
@@ -59,8 +65,11 @@ function Sidebar() {
                         {/* Role */}
                         <li className="menuline">
                             <div className="menu-head" id="sidemenuhead6">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/role/add"
+                                    // className="btn btn-header-link"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/role/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu6"
                                     aria-expanded="true"
@@ -68,11 +77,11 @@ function Sidebar() {
                                 >
                                     <i className="fa-solid fa-user-shield"></i>
                                     <span>Role</span>
-                                </Link>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu6"
-                                className="collapse"
+                                className="collapse d-none"
                                 aria-labelledby="sidemenuhead6"
                                 data-parent="#sidemenu"
                             >
@@ -80,115 +89,126 @@ function Sidebar() {
                                     <li><NavLink to="/role/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Role</NavLink></li>
                                     <li><NavLink to="/role/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Role</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
-                        {/***Menu 2 For Logo ***/}
-                        <li className="menuline d-none">
+                        {/***Menu 2 For Project Help ***/}
+                        <li className="menuline">
                             <div className="menu-head" id="sidemenuhead1">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/projectHelp/add"
+                                    // className="btn btn-header-link"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/projectHelp/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu1"
                                     aria-expanded="true"
                                     aria-controls="sidemenu1"
                                 >
-                                    <i className="fa-solid fa-image"></i>
-                                    <span>Logo</span>
-                                </Link>
+                                    <i className="fa-solid fa-circle-question"></i>
+                                    <span>Project Help</span>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu1"
                                 className="collapse"
                                 aria-labelledby="sidemenuhead1"
                                 data-parent="#sidemenu"
                             >
                                 <ul className="Submenu">
-                                    <li><NavLink to="/logo" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Logo</NavLink></li>
-                                    <li><NavLink to="/logo-form" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Logo</NavLink></li>
+                                    <li><NavLink to="/projectHelp/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Project Help</NavLink></li>
+                                    <li><NavLink to="/projectHelp/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Project Help</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
-                        {/***Menu 3 For Theme ***/}
-                        <li className="menuline d-none">
+                        {/***Menu 3 For Department ***/}
+                        <li className="menuline">
                             <div className="menu-head" id="sidemenuhead2">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/department/add"
+                                    // className="btn btn-header-link"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/department/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu2"
                                     aria-expanded="true"
                                     aria-controls="sidemenu2"
                                 >
-                                    <i className="fa-solid fa-paintbrush"></i>
-                                    <span>Theme</span>
-                                </Link>
+                                    <i className="fa-solid fa-building"></i>
+                                    <span>Department</span>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu2"
                                 className="collapse"
                                 aria-labelledby="sidemenuhead2"
                                 data-parent="#sidemenu"
                             >
                                 <ul className="Submenu">
-                                    <li><NavLink to="/theme" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Theme</NavLink></li>
-                                    <li><NavLink to="/theme-form" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Theme</NavLink></li>
+                                    <li><NavLink to="/department/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Department</NavLink></li>
+                                    <li><NavLink to="/department/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Department</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
-                        {/***Menu 4 For Partner Logo ***/}
-                        <li className="menuline d-none">
+                        {/***Menu 4 For Designation ***/}
+                        <li className="menuline">
                             <div className="menu-head" id="sidemenuhead3">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/designation/add"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/designation/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu3"
                                     aria-expanded="true"
                                     aria-controls="sidemenu3"
                                 >
-                                    <i className="fa-solid fa-image"></i>
-                                    <span>Partner Logo</span>
-                                </Link>
+                                    <i className="fa-solid fa-user-tie"></i>
+                                    <span>Designation</span>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu3"
                                 className="collapse"
                                 aria-labelledby="sidemenuhead3"
                                 data-parent="#sidemenu"
                             >
                                 <ul className="Submenu">
-                                    <li><NavLink to="/partner-logo" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Partner Logo</NavLink></li>
-                                    <li><NavLink to="/add-partner-logo" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Partner Logo</NavLink></li>
+                                    <li><NavLink to="/designation/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Designation</NavLink></li>
+                                    <li><NavLink to="/designation/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Designation</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
-                        {/***Menu 5 For Badge ***/}
-                        <li className="menuline d-none">
+                        {/***Menu 5 For Clients ***/}
+                        <li className="menuline">
                             <div className="menu-head" id="sidemenuhead4">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/client/add"
+                                    // className="btn btn-header-link"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/client/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu4"
                                     aria-expanded="true"
                                     aria-controls="sidemenu4"
                                 >
-                                    <i className="fa-solid fa-medal"></i>
-                                    <span>Badge</span>
-                                </Link>
+                                    <i className="fa-solid fa-users"></i>
+                                    <span>Clients</span>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu4"
                                 className="collapse"
                                 aria-labelledby="sidemenuhead4"
                                 data-parent="#sidemenu"
                             >
                                 <ul className="Submenu">
-                                    <li><NavLink to="/badge" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Badge</NavLink></li>
-                                    <li><NavLink to="/add-badge" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Badge</NavLink></li>
+                                    <li><NavLink to="/client/view" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Clients</NavLink></li>
+                                    <li><NavLink to="/client/add" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Clients</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
                         {/***Menu 6 For Pilliar ***/}

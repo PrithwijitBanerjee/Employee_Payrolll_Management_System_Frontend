@@ -7,6 +7,10 @@ import Login from "@/views/Auth/Login";
 import PrivateRoute from "./PrivateRoute";
 import PublicRoute from "./PublicRoute";
 import RoleRoutes from "@/routes/Roles/RoleRoutes";
+import ProjectHelpRoute from "./ProjectHelps/ProjectHelpRoute";
+import DepartmentRoute from "@/routes/Departments/DepartmentRoute";
+import DesignationRoute from "@/routes/Designations/DesignationRoute";
+import ClientRoute from "./Clients/ClientRoute";
 
 const ProjectRoutes: React.FC = () => {
     return (
@@ -22,6 +26,18 @@ const ProjectRoutes: React.FC = () => {
 
                         {/* ...All Role related Route defined here ... */}
                         <Route path="/role/*" element={<RoleRoutes />} />
+
+                        {/* ...All Project Help related Route defined here ... */}
+                        <Route path="/projectHelp/*" element={<ProjectHelpRoute />} />
+
+                        {/* ...All Department related Route defined here ... */}
+                        <Route path="/department/*" element={<DepartmentRoute />} />
+
+                        {/* ...All Designation related Route defined here ... */}
+                        <Route path="/designation/*" element={<DesignationRoute />} />
+
+                        {/* ...All Client related Route defined here ... */}
+                        <Route path="/client/*" element={<ClientRoute />} />
                     </Route>
                 </Route>
             </Routes>

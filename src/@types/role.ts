@@ -1,6 +1,7 @@
 export type RoleArrType = {
-    id: number,
+    id?: number,
     roleName: string,
+    code: string,
 };
 
 export type RoleRespType = {

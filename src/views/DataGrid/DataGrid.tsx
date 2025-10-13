@@ -25,6 +25,9 @@ interface DataGridProps {
   filteredDropdownForImages?: boolean;
   onSearchChange?: (searchText: string) => void;
   serverSideSearch?: boolean;
+  isAddPaginateBtn?: boolean,
+  paginateBtnHnadler?: any,
+  buttonText: string |any,
 }
 
 interface SortConfig {
@@ -46,6 +49,9 @@ const DataGrid: React.FC<DataGridProps> = ({
   tableWidth = '100%',
   onSearchChange,
   serverSideSearch = false,
+  isAddPaginateBtn = false,
+  paginateBtnHnadler,
+  buttonText,
 }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -116,7 +122,7 @@ const DataGrid: React.FC<DataGridProps> = ({
     return [...data].sort((a, b) => {
       const aValue = a[sortConfig.key!];
       const bValue = b[sortConfig.key!];
-      
+
       if (aValue < bValue) {
         return sortConfig.direction === 'asc' ? -1 : 1;
       }
@@ -181,7 +187,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchText(value);
-    
+
     if (serverSideSearch && onSearchChange) {
       onSearchChange(value);
     }
@@ -196,6 +202,11 @@ const DataGrid: React.FC<DataGridProps> = ({
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="card-title mb-0">{title}</h4>
 
+                {isAddPaginateBtn && (
+                  <div className="input-group" style={{ width: '300px', minWidth: '200px' }}>
+                    <button className='btn btn-outline-primary' onClick={paginateBtnHnadler}>{buttonText}</button>
+                  </div>
+                )}
                 {searchable && (
                   <div className="input-group" style={{ width: '300px', minWidth: '200px' }}>
                     <span className="input-group-text mx-2">

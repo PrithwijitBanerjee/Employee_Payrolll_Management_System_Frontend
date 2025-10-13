@@ -120,7 +120,7 @@ const Login: React.FC = (): React.ReactElement => {
             toast.error("Please fix the errors in the form");
             return;
         }
-        // console.log("Submitting form:", submissionData);
+        console.log("Submitting form:", formData);
         dispatch(signInUser(formData));
     };
 
@@ -192,7 +192,7 @@ const Login: React.FC = (): React.ReactElement => {
                 </form>
 
                 {/* Rest of your component remains the same */}
-                <div className="alternative-login">
+                <div className="alternative-login d-none">
                     <div className="divider">
                         <span>Or Login with</span>
                     </div>
@@ -220,7 +220,7 @@ const Login: React.FC = (): React.ReactElement => {
                     </div>
                 </div>
 
-                <p className="footer-text">
+                <p className="footer-text d-none">
                     Already have an account? <Link to="/register">Register here</Link>
                 </p>
             </div>

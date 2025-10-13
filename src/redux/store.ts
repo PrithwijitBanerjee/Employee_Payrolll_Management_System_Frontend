@@ -4,6 +4,11 @@ import { persistStore, persistReducer } from "redux-persist";
 import { useDispatch, useSelector } from "react-redux";
 import authSlice from "@/redux/Authentication/authSlice";
 import roleSlice from "./Roles/roleSlice";
+import projectHelpSlice from "./ProjectHelp/projectHelpSlice";
+import departmentSlice from "./Departments/departmentSlice";
+import designationSlice from "./Designations/designationSlice";
+import clientSlice from "./Clients/clientSlice";
+import employeeSlice from "./Employees/employeeSlice";
 
 const persistConfig = {
     key: "root",
@@ -12,8 +17,13 @@ const persistConfig = {
 };
 
 const reducer = combineReducers({
-   auth: authSlice.reducer,
-   role: roleSlice.reducer,
+    auth: authSlice.reducer,
+    role: roleSlice.reducer,
+    projectHelp: projectHelpSlice.reducer,
+    department: departmentSlice.reducer,
+    designation: designationSlice.reducer,
+    employee: employeeSlice.reducer,
+    client: clientSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

@@ -1,39 +1,39 @@
-import type { RoleInputType, RoleRespType, RoleSlice, UpdateRoleInpType } from "@/@types/role";
+import type { EmployeeInpType, EmployeeRespType, EmployeeSlice, UpdateEmployeeType } from "@/@types/employee";
 import Endpoints from "@/utils/Endpoints";
 import HttpClients from "@/utils/HttpClients";
 import { STATUES } from "@/utils/Status";
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
-const initialState: RoleSlice = {
+const initialState: EmployeeSlice = {
     status: STATUES.IDLE,
     error: null,
-    roles: [],
-    role: null,
+    employee: null,
+    employees: [],
 };
 
-export const getAllRoles = createAsyncThunk<RoleRespType, void>("user/role/fetch/Job", async (_, { rejectWithValue }) => {
+export const getAllEmployees = createAsyncThunk<EmployeeRespType, void>("user/employees/fetch/Job", async (_, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.getRequest<RoleRespType>(Endpoints.getAllRolesPublic);
+        const res = await HttpClients.getRequest<EmployeeRespType>(Endpoints.getAllEmployees);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-export const getRoleById = createAsyncThunk<RoleRespType, number>("user/role/fetch/:id/Job", async (roleId, { rejectWithValue }) => {
+export const getEmployeeById = createAsyncThunk<EmployeeRespType, string>("user/employee/fetch/:id/Job", async (employeeId, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.getRequest<RoleRespType>(`${Endpoints.getRoleById}/${roleId}`);
+        const res = await HttpClients.getRequest<EmployeeRespType>(`${Endpoints.getEmployeeById}/${employeeId}`);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-export const addRole = createAsyncThunk<RoleRespType, RoleInputType>("user/role/add/Job", async (roleData, { rejectWithValue }) => {
+export const addEmployee = createAsyncThunk<EmployeeRespType, EmployeeInpType>("user/employee/add/Job", async (employeeData, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.postRequest<RoleRespType>(Endpoints.addRole, {
-            ...roleData,
+        const res = await HttpClients.postRequest<EmployeeRespType>(Endpoints.addEmployee, {
+            ...employeeData,
         });
         return res;
     } catch (error) {
@@ -41,10 +41,10 @@ export const addRole = createAsyncThunk<RoleRespType, RoleInputType>("user/role/
     }
 });
 
-export const updateRole = createAsyncThunk<RoleRespType, UpdateRoleInpType>("user/role/update/:id/Job", async ({ id, role }, { rejectWithValue }) => {
+export const updateEmployee = createAsyncThunk<EmployeeRespType, UpdateEmployeeType>("user/employee/update/:id/Job", async ({ id, ...employeeData }, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.putRequest<RoleRespType>(`${Endpoints.updateRole}/${id}`, {
-            role,
+        const res = await HttpClients.putRequest<EmployeeRespType>(`${Endpoints.updateEmployee}/${id}`, {
+            ...employeeData,
         });
         return res;
     } catch (error) {
@@ -52,74 +52,74 @@ export const updateRole = createAsyncThunk<RoleRespType, UpdateRoleInpType>("use
     }
 });
 
-export const deleteRole = createAsyncThunk<RoleRespType, string>("user/role/delete/:id/Job", async (roleId, { rejectWithValue }) => {
+export const deleteEmployee = createAsyncThunk<EmployeeRespType, string>("user/employee/delete/:id/Job", async (employeeId, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.deleteRequest<RoleRespType>(`${Endpoints.deleteRole}/${roleId}`);
+        const res = await HttpClients.deleteRequest<EmployeeRespType>(`${Endpoints.deleteEmployee}/${employeeId}`);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-const roleSlice = createSlice({
-    name: "role",
+const employeeSlice = createSlice({
+    name: "employee",
     initialState,
     reducers: {}, // Required property
     extraReducers: builder => {
         builder
-            .addCase(getAllRoles.pending, state => {
+            .addCase(getAllEmployees.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
-                state.roles = [];
+                state.employees = [];
             })
-            .addCase(getAllRoles.fulfilled, (state, { payload }: PayloadAction<RoleRespType>) => {
+            .addCase(getAllEmployees.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
-                    state.roles = payload.data || [];
+                    state.employees = payload.data || [];
                 } else {
                     state.status = STATUES.ERROR;
                     state.error = payload.message || null;
-                    state.roles = [];
+                    state.employees = [];
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(getAllRoles.rejected, (state, { payload }: PayloadAction<RoleRespType | any>) => {
+            .addCase(getAllEmployees.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
-                state.roles = [];
+                state.employees = [];
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(getRoleById.pending, state => {
+            .addCase(getEmployeeById.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
-                state.role = null;
+                state.employee = null;
             })
-            .addCase(getRoleById.fulfilled, (state, { payload }: PayloadAction<RoleRespType>) => {
+            .addCase(getEmployeeById.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
-                    state.role = payload.data || null;
+                    state.employee = payload.data || null;
                 } else {
                     state.status = STATUES.ERROR;
                     state.error = payload.message || null;
-                    state.role = null;
+                    state.employee = null;
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(getRoleById.rejected, (state, { payload }: PayloadAction<RoleRespType | any>) => {
+            .addCase(getEmployeeById.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
-                state.role = null;
+                state.employee = null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(addRole.pending, state => {
+            .addCase(addEmployee.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(addRole.fulfilled, (state, { payload }: PayloadAction<RoleRespType>) => {
+            .addCase(addEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -130,16 +130,16 @@ const roleSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(addRole.rejected, (state, { payload }: PayloadAction<RoleRespType | any>) => {
+            .addCase(addEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
-            .addCase(updateRole.pending, state => {
+            .addCase(updateEmployee.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(updateRole.fulfilled, (state, { payload }: PayloadAction<RoleRespType>) => {
+            .addCase(updateEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -150,17 +150,17 @@ const roleSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(updateRole.rejected, (state, { payload }: PayloadAction<RoleRespType | any>) => {
+            .addCase(updateEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(deleteRole.pending, state => {
+            .addCase(deleteEmployee.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(deleteRole.fulfilled, (state, { payload }: PayloadAction<RoleRespType>) => {
+            .addCase(deleteEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -171,7 +171,7 @@ const roleSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(deleteRole.rejected, (state, { payload }: PayloadAction<RoleRespType | any>) => {
+            .addCase(deleteEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
@@ -179,4 +179,4 @@ const roleSlice = createSlice({
     }
 });
 
-export default roleSlice;
+export default employeeSlice;

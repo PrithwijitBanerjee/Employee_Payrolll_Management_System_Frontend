@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, type FormEvent } from "react";
 import DataGrid from "../DataGrid/DataGrid";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -41,11 +41,11 @@ const Roles: React.FC = () => {
 
     const handleDelete = async (row: RoleArrType): Promise<void> => {
         try {
-            console.log("delete id: ", row.id);
-            
-            dispatch(deleteRole(row.id));
+            // console.log("delete code: ", row.code);
+
+            dispatch(deleteRole(row.code));
         } catch (error: any) {
-            toast.error(error?.message || "Failed to delete logo");
+            toast.error(error?.message || "Failed to delete role");
         }
     };
 
@@ -59,6 +59,12 @@ const Roles: React.FC = () => {
                 onDelete={handleDelete}
                 title="Role List"
                 searchable={false}
+                isAddPaginateBtn={true}
+                buttonText="Add New Role"
+                paginateBtnHnadler={(e: FormEvent) => {
+                    e.preventDefault();
+                    navigate("/role/add");
+                }}
             // filteredDropdownForImages={true}
             />
         </>

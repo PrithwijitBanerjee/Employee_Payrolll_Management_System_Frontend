@@ -96,7 +96,7 @@ const Registration: React.FC = (): React.ReactElement => {
 
     setFormData(prev => ({
       ...prev,
-      [name]: name === "role" ? parseInt(value, 10) : value
+      [name]: value,
     }));
 
     // Validate field on change if it's been touched
@@ -144,7 +144,6 @@ const Registration: React.FC = (): React.ReactElement => {
     // Ensure role is a number
     const submissionData = {
       ...formData,
-      role: Number(formData.role)
     };
 
     // console.log("Submitting form:", submissionData);
@@ -236,8 +235,8 @@ const Registration: React.FC = (): React.ReactElement => {
             >
               <option value="0">Select a role</option>
               {allRoles?.length > 0 ? allRoles?.map(role => (
-                <option key={role?.id} value={role?.id}>{role?.roleName}</option> // Use role.id for value
-              )) : (<option value="0" disabled>Loading roles...</option>)}
+                <option key={role?.code} value={role?.code}>{role?.roleName}</option> // Use role.id for value
+              )) : (<option value={""} disabled>Loading roles...</option>)}
             </select>
             <label htmlFor="role" className="select-label">Role</label>
             <div className={`input-underline ${errors.role ? "error" : ""}`}></div>
