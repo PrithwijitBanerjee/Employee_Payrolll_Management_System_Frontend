@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import Sidebar from "./Sidebar";
 // import profileP from "../Images/profile-pic.png";
 import DefaultProfile from "@/components/commons/DefaultProfile";
@@ -50,6 +50,10 @@ const Header = () => {
 
     const userEmail = getUserEmail();
 
+    const isClientsActive = (path: string): boolean => {
+        return location.pathname.startsWith("/" + path.split("/")[1]);
+    };
+
     return (
         <>
             <section className="mainheader_sec">
@@ -65,6 +69,18 @@ const Header = () => {
 
                 <div className="Search_box">
                     {/* Search form removed as per original code */}
+                    <NavLink to="/project/add"
+                        className={({ isActive }) =>
+                            ` ${isActive || isClientsActive("/project/add") ? "text_underline" : ""}`
+                        }
+                        data-toggle="collapse"
+                        data-target="#sidemenu5"
+                        aria-expanded="true"
+                        aria-controls="sidemenu5"
+                    >
+                       <i className="fa-solid fa-diagram-project"></i>
+                        <span className="mx-2">Projects</span>
+                    </NavLink>
                 </div>
 
                 <div className="rightcontent d-flex">

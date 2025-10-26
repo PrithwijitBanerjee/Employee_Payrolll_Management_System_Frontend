@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, type FormEvent } from "react";
 import DataGrid from "../DataGrid/DataGrid";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -81,6 +81,12 @@ const Clients: React.FC = () => {
                 onDelete={handleDelete}
                 title="Client List"
                 searchable={false}
+                buttonText={"Add New Client"}
+                isAddPaginateBtn={true}
+                paginateBtnHnadler={(e: FormEvent) => {
+                    e.preventDefault();
+                    navigate("/client/add");
+                }}
             // filteredDropdownForImages={true}
             />
         </>

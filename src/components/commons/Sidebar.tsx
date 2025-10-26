@@ -6,7 +6,6 @@ import logo from "@/images/Employee_JOB_Image_Logo.jpg";
 import LogoutModal from "@/components/modals/LogoutModal";
 import { useAppDispatch } from "@/redux/store";
 import { logoutUser } from "@/redux/Authentication/authSlice";
-import type { boolean } from "yup";
 
 function Sidebar() {
     const location = useLocation();
@@ -211,21 +210,23 @@ function Sidebar() {
                             </div> */}
                         </li>
 
-                        {/***Menu 6 For Pilliar ***/}
-                        <li className="menuline d-none">
+                        {/***Menu 6 For Employee ***/}
+                        <li className="menuline">
                             <div className="menu-head" id="sidemenuhead5">
-                                <Link to="#"
-                                    className="btn btn-header-link"
+                                <NavLink to="/employee/add"
+                                    className={({ isActive }) =>
+                                        `btn btn-header-link ${isActive || isClientsActive("/employee/add") ? "active" : ""}`
+                                    }
                                     data-toggle="collapse"
                                     data-target="#sidemenu5"
                                     aria-expanded="true"
                                     aria-controls="sidemenu5"
                                 >
                                     <i className="fa-solid fa-landmark"></i>
-                                    <span>Pillar</span>
-                                </Link>
+                                    <span>Employee</span>
+                                </NavLink>
                             </div>
-                            <div
+                            {/* <div
                                 id="sidemenu5"
                                 className="collapse"
                                 aria-labelledby="sidemenuhead5"
@@ -235,7 +236,7 @@ function Sidebar() {
                                     <li><NavLink to="/pilliar" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Manage Pillars</NavLink></li>
                                     <li><NavLink to="/add-pilliar" onClick={handlClick}><i className="fa-solid fa-angles-right mr-2"></i>Add Pillar</NavLink></li>
                                 </ul>
-                            </div>
+                            </div> */}
                         </li>
 
                         {/***Menu 7 For Features ***/}

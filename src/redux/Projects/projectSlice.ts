@@ -1,56 +1,39 @@
-import type { EmployeeInpType, EmployeeRespType, EmployeeSlice, UpdateEmployeeType } from "@/@types/employee";
-import type { ProjectHelpArrType, ProjectHelpResp } from "@/@types/projectHelp";
+import type { ProjectInpType, ProjectRespType, ProjectSlice, UpdateProjectType } from "@/@types/project";
 import Endpoints from "@/utils/Endpoints";
-import { getErrorMessage } from "@/utils/getErrorMessage";
 import HttpClients from "@/utils/HttpClients";
 import { STATUES } from "@/utils/Status";
 import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
-const initialState: EmployeeSlice = {
+const initialState: ProjectSlice = {
     status: STATUES.IDLE,
     error: null,
-    employee: null,
-    employees: [],
+    projects: [],
+    project: null,
 };
 
-export const getAllEmployeeTypes = async (tag: string): Promise<ProjectHelpArrType | []> => {
+export const getAllProjects = createAsyncThunk<ProjectRespType, void>("user/projects/fetch/Job", async (_, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.getRequest<ProjectHelpResp>(`${Endpoints.getProjectHelpByTag}/${tag}`);
-        if (res.status && typeof res.status === "boolean") {
-            return res?.data || [];
-        } else {
-            return [];
-        }
-    } catch (error) {
-        const errorMessage = getErrorMessage(error);
-        toast.error(errorMessage);
-        return [];
-    }
-};
-
-export const getAllEmployees = createAsyncThunk<EmployeeRespType, void>("user/employees/fetch/Job", async (_, { rejectWithValue }) => {
-    try {
-        const res = await HttpClients.getRequest<EmployeeRespType>(Endpoints.getAllEmployees);
+        const res = await HttpClients.getRequest<ProjectRespType>(Endpoints.getAllProjects);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-export const getEmployeeById = createAsyncThunk<EmployeeRespType, string>("user/employee/fetch/:id/Job", async (employeeId, { rejectWithValue }) => {
+export const getProjectById = createAsyncThunk<ProjectRespType, string>("user/project/fetch/:id/Job", async (projectId, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.getRequest<EmployeeRespType>(`${Endpoints.getEmployeeById}/${employeeId}`);
+        const res = await HttpClients.getRequest<ProjectRespType>(`${Endpoints.getProjectById}/${projectId}`);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-export const addEmployee = createAsyncThunk<EmployeeRespType, EmployeeInpType>("user/employee/add/Job", async (employeeData, { rejectWithValue }) => {
+export const addProject = createAsyncThunk<ProjectRespType, ProjectInpType>("user/project/add/Job", async (projectData, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.postRequest<EmployeeRespType>(Endpoints.addEmployee, {
-            ...employeeData,
+        const res = await HttpClients.postRequest<ProjectRespType>(Endpoints.addProject, {
+            ...projectData,
         });
         return res;
     } catch (error) {
@@ -58,10 +41,10 @@ export const addEmployee = createAsyncThunk<EmployeeRespType, EmployeeInpType>("
     }
 });
 
-export const updateEmployee = createAsyncThunk<EmployeeRespType, UpdateEmployeeType>("user/employee/update/:id/Job", async ({ id, ...employeeData }, { rejectWithValue }) => {
+export const updateProject = createAsyncThunk<ProjectRespType, UpdateProjectType>("user/project/update/:id/Job", async ({ id, ...projectData }, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.putRequest<EmployeeRespType>(`${Endpoints.updateEmployee}/${id}`, {
-            ...employeeData,
+        const res = await HttpClients.putRequest<ProjectRespType>(`${Endpoints.updateProject}/${id}`, {
+            ...projectData,
         });
         return res;
     } catch (error) {
@@ -69,74 +52,74 @@ export const updateEmployee = createAsyncThunk<EmployeeRespType, UpdateEmployeeT
     }
 });
 
-export const deleteEmployee = createAsyncThunk<EmployeeRespType, string>("user/employee/delete/:id/Job", async (employeeId, { rejectWithValue }) => {
+export const deleteProject = createAsyncThunk<ProjectRespType, string>("user/employee/delete/:id/Job", async (employeeId, { rejectWithValue }) => {
     try {
-        const res = await HttpClients.deleteRequest<EmployeeRespType>(`${Endpoints.deleteEmployee}/${employeeId}`);
+        const res = await HttpClients.deleteRequest<ProjectRespType>(`${Endpoints.deleteEmployee}/${employeeId}`);
         return res;
     } catch (error) {
         return rejectWithValue(error);
     }
 });
 
-const employeeSlice = createSlice({
-    name: "employee",
+const projectSlice = createSlice({
+    name: "project",
     initialState,
     reducers: {}, // Required property
     extraReducers: builder => {
         builder
-            .addCase(getAllEmployees.pending, state => {
+            .addCase(getAllProjects.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
-                state.employees = [];
+                state.projects = [];
             })
-            .addCase(getAllEmployees.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
+            .addCase(getAllProjects.fulfilled, (state, { payload }: PayloadAction<ProjectRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
-                    state.employees = payload.data || [];
+                    state.projects = payload.data || [];
                 } else {
                     state.status = STATUES.ERROR;
                     state.error = payload.message || null;
-                    state.employees = [];
+                    state.projects = [];
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(getAllEmployees.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(getAllProjects.rejected, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
-                state.employees = [];
+                state.projects = [];
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(getEmployeeById.pending, state => {
+            .addCase(getProjectById.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
-                state.employee = null;
+                state.project = null;
             })
-            .addCase(getEmployeeById.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
+            .addCase(getProjectById.fulfilled, (state, { payload }: PayloadAction<ProjectRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
-                    state.employee = payload.data || null;
+                    state.project = payload.data || null;
                 } else {
                     state.status = STATUES.ERROR;
                     state.error = payload.message || null;
-                    state.employee = null;
+                    state.project = null;
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(getEmployeeById.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(getProjectById.rejected, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
-                state.employee = null;
+                state.project = null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(addEmployee.pending, state => {
+            .addCase(addProject.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(addEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(addProject.fulfilled, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -147,16 +130,16 @@ const employeeSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(addEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(addProject.rejected, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
-            .addCase(updateEmployee.pending, state => {
+            .addCase(updateProject.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(updateEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(updateProject.fulfilled, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -167,17 +150,17 @@ const employeeSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(updateEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(updateProject.rejected, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
             })
 
-            .addCase(deleteEmployee.pending, state => {
+            .addCase(deleteProject.pending, state => {
                 state.status = STATUES.LOADING;
                 state.error = null;
             })
-            .addCase(deleteEmployee.fulfilled, (state, { payload }: PayloadAction<EmployeeRespType>) => {
+            .addCase(deleteProject.fulfilled, (state, { payload }: PayloadAction<ProjectRespType>) => {
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
@@ -188,7 +171,7 @@ const employeeSlice = createSlice({
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })
-            .addCase(deleteEmployee.rejected, (state, { payload }: PayloadAction<EmployeeRespType | any>) => {
+            .addCase(deleteProject.rejected, (state, { payload }: PayloadAction<ProjectRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
@@ -196,4 +179,4 @@ const employeeSlice = createSlice({
     }
 });
 
-export default employeeSlice;
+export default projectSlice;

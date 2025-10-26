@@ -9,6 +9,7 @@ import departmentSlice from "./Departments/departmentSlice";
 import designationSlice from "./Designations/designationSlice";
 import clientSlice from "./Clients/clientSlice";
 import employeeSlice from "./Employees/employeeSlice";
+import projectSlice from "./Projects/projectSlice";
 
 const persistConfig = {
     key: "root",
@@ -24,6 +25,7 @@ const reducer = combineReducers({
     designation: designationSlice.reducer,
     employee: employeeSlice.reducer,
     client: clientSlice.reducer,
+    project: projectSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

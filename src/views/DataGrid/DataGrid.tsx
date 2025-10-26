@@ -28,6 +28,10 @@ interface DataGridProps {
   isAddPaginateBtn?: boolean,
   paginateBtnHnadler?: any,
   buttonText: string |any,
+  // New props for status filter
+  showStatusFilter?: boolean;
+  statusFilterValue?: string;
+  onStatusFilterChange?: (value: string) => void;
 }
 
 interface SortConfig {
@@ -52,6 +56,10 @@ const DataGrid: React.FC<DataGridProps> = ({
   isAddPaginateBtn = false,
   paginateBtnHnadler,
   buttonText,
+  // New props for status filter
+  showStatusFilter = false,
+  statusFilterValue = "Active",
+  onStatusFilterChange,
 }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -193,6 +201,13 @@ const DataGrid: React.FC<DataGridProps> = ({
     }
   };
 
+  const handleStatusFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    if (onStatusFilterChange) {
+      onStatusFilterChange(value);
+    }
+  };
+
   return (
     <div className="d-flex justify-content-end">
       <div className='form-header mx-2'>
@@ -202,25 +217,42 @@ const DataGrid: React.FC<DataGridProps> = ({
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="card-title mb-0">{title}</h4>
 
-                {isAddPaginateBtn && (
-                  <div className="input-group" style={{ width: '300px', minWidth: '200px' }}>
-                    <button className='btn btn-outline-primary' onClick={paginateBtnHnadler}>{buttonText}</button>
-                  </div>
-                )}
-                {searchable && (
-                  <div className="input-group" style={{ width: '300px', minWidth: '200px' }}>
-                    <span className="input-group-text mx-2">
-                      <FaSearch />
-                    </span>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="Search..."
-                      value={searchText}
-                      onChange={handleSearchChange}
-                    />
-                  </div>
-                )}
+                <div className="d-flex align-items-center gap-2">
+                  {showStatusFilter && (
+                    <div className="input-group" style={{ width: '200px', minWidth: '150px' }}>
+                      <select
+                        className="form-select"
+                        value={statusFilterValue}
+                        onChange={handleStatusFilterChange}
+                      >
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="All">All</option>
+                      </select>
+                    </div>
+                  )}
+
+                  {isAddPaginateBtn && (
+                    <div className="input-group mx-3" style={{ width: '200px', minWidth: '150px' }}>
+                      <button className='btn btn-outline-primary' onClick={paginateBtnHnadler}>{buttonText}</button>
+                    </div>
+                  )}
+
+                  {searchable && (
+                    <div className="input-group" style={{ width: '300px', minWidth: '200px' }}>
+                      <span className="input-group-text mx-2">
+                        <FaSearch />
+                      </span>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Search..."
+                        value={searchText}
+                        onChange={handleSearchChange}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="table-responsive flex-grow-1">

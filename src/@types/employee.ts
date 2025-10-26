@@ -9,6 +9,7 @@ export type EmployeeInpType = {
     UserID: string,
     Password: string,
     EmplStatus: string,
+    Email: string,
 };
 
 export type EmployeeSlice = {
@@ -36,6 +37,7 @@ export type UpdateEmployeeType = {
     UserID: string,
     Password: string,
     EmplStatus: string,
+    Email: string,
 };
 
 export type EmployeeArrType = {
@@ -50,10 +52,24 @@ export type EmployeeArrType = {
     UserID: string,
     Password: string,
     EmplStatus: string,
+    Email: string,
     createdAt?: string,
     updatedAt?: string,
     status: {
         code: string,
         data: string,
     } | null,
+    type: {
+        code: string,
+        data: string,
+        tag: string,
+    },
+    department: {
+        DeptCode: string,
+        DeptName: string,
+    },
+    designation: {
+        DesgCode: string,
+        DesgName: string,
+    }
 };

@@ -371,6 +371,24 @@ body.drakmode .responsive_menu {
 
 .Search_box {
   display: block;
+  border: none;
+}
+
+.Search_box a {
+    font-size: 16px;
+    font-weight: 600;
+    padding: 20px;
+    border: none;
+}
+
+.Search_box a:hover {
+  color: black;
+  font-weight: bolder;
+}
+
+.text_underline {
+   text-decoration: underline;
+   font-weight: bolder !important;
 }
 
 .Search_box .form-inline {
@@ -835,3 +853,6 @@ Responsive
   margin-bottom: 15px;
 }
 
+.sticky-top {
+  z-index: 0 !important;
+}

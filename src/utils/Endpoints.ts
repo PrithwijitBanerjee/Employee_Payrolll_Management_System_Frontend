@@ -48,6 +48,14 @@ const Endpoints = {
     updateEmployee: "admin/update-employee",
     deleteEmployee: "admin/delete-employee",
 
+
+    /** ... project related endpoints ... **/
+    addProject: "admin/create-project",
+    getAllProjects: "admin/get-projects",
+    getProjectById: "admin/get-project",
+    updateProject: "admin/update-project",
+    deleteProject: "admin/delete-project",
+
 };
 
 export const Logout = 419;

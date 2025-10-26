@@ -11,6 +11,8 @@ import ProjectHelpRoute from "./ProjectHelps/ProjectHelpRoute";
 import DepartmentRoute from "@/routes/Departments/DepartmentRoute";
 import DesignationRoute from "@/routes/Designations/DesignationRoute";
 import ClientRoute from "./Clients/ClientRoute";
+import EmployeeRoute from "./Employees/EmployeeRoute";
+import ProjectRoute from "./Projects/ProjectRoute";
 
 const ProjectRoutes: React.FC = () => {
     return (
@@ -38,6 +40,12 @@ const ProjectRoutes: React.FC = () => {
 
                         {/* ...All Client related Route defined here ... */}
                         <Route path="/client/*" element={<ClientRoute />} />
+
+                        {/* ...All Employee related Route defined here ... */}
+                        <Route path="/employee/*" element={<EmployeeRoute />} />
+
+                        {/* ...All Project related Route defined here ... */}
+                        <Route path="/project/*" element={<ProjectRoute />} />
                     </Route>
                 </Route>
             </Routes>
