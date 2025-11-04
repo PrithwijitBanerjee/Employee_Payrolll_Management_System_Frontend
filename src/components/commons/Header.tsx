@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import Sidebar from "./Sidebar";
+// import Sidebar from "./Sidebar";
 // import profileP from "../Images/profile-pic.png";
 import DefaultProfile from "@/components/commons/DefaultProfile";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
@@ -28,8 +28,6 @@ const Header = () => {
     const handleLogout = (): void => {
         toggleLogoutModal();
         dispatch(logoutUser());
-
-        // logoutCleanUp();
         navigate("/login");
     };
 
@@ -54,6 +52,16 @@ const Header = () => {
         return location.pathname.startsWith("/" + path.split("/")[1]);
     };
 
+    // Active state for Master Setup (underline when any sub-route is active)
+    const isMasterActive = [
+        "/role/add",
+        "/projectHelp/add",
+        "/department/add",
+        "/designation/add",
+        "/client/add",
+        "/employee/add",
+    ].some(p => isClientsActive(p));
+
     return (
         <>
             <section className="mainheader_sec">
@@ -68,19 +76,47 @@ const Header = () => {
                 </button>
 
                 <div className="Search_box">
-                    {/* Search form removed as per original code */}
-                    <NavLink to="/project/add"
-                        className={({ isActive }) =>
-                            ` ${isActive || isClientsActive("/project/add") ? "text_underline" : ""}`
-                        }
-                        data-toggle="collapse"
-                        data-target="#sidemenu5"
-                        aria-expanded="true"
-                        aria-controls="sidemenu5"
-                    >
-                       <i className="fa-solid fa-diagram-project"></i>
-                        <span className="mx-2">Projects</span>
-                    </NavLink>
+                    {/* Master Setup dropdown */}
+                    <div className="dropdown">
+                        <Link
+                            className={`dropdown-toggle ${isMasterActive ? "text_underline" : ""}`}
+                            to="/"
+                            id="masterSetupDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            <i className="fa-solid fa-screwdriver-wrench"></i>
+                            <span className="mx-2">Master Setup</span>
+                        </Link>
+                        <div
+                            className="dropdown-menu"
+                            aria-labelledby="masterSetupDropdown"
+                        >
+                            <NavLink className="dropdown-item" to="/">
+                                <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/role/add">
+                                <i className="fa-solid fa-user-shield mr-2"></i> Role
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/projectHelp/add">
+                                <i className="fa-solid fa-circle-question mr-2"></i> Project Help
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/department/add">
+                                <i className="fa-solid fa-building mr-2"></i> Department
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/designation/add">
+                                <i className="fa-solid fa-user-tie mr-2"></i> Designation
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/client/add">
+                                <i className="fa-solid fa-users mr-2"></i> Clients
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/employee/add">
+                                <i className="fa-solid fa-landmark mr-2"></i> Employee
+                            </NavLink>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="rightcontent d-flex">
@@ -134,7 +170,7 @@ const Header = () => {
                     </div>
                 </div>
             </section>
-            <Sidebar />
+            {/* <Sidebar /> */}
 
             {showLogoutModal && (
                 <LogoutModal

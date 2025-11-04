@@ -329,7 +329,10 @@ Header
 =============
 */
 .mainheader_sec {
-  width: calc(100% - 310px);
+  /* width: calc(100% - 310px); */
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   margin-left: auto;
   height: 80px;
   padding: 20px 20px;
@@ -375,10 +378,10 @@ body.drakmode .responsive_menu {
 }
 
 .Search_box a {
-    font-size: 16px;
-    font-weight: 600;
-    padding: 20px;
-    border: none;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 20px;
+  border: none;
 }
 
 .Search_box a:hover {
@@ -387,8 +390,8 @@ body.drakmode .responsive_menu {
 }
 
 .text_underline {
-   text-decoration: underline;
-   font-weight: bolder !important;
+  text-decoration: underline;
+  font-weight: bolder !important;
 }
 
 .Search_box .form-inline {
@@ -615,7 +618,10 @@ Dashboard
 */
 
 .main_wrap {
-  width: calc(100% - 310px);
+  /* width: calc(100% - 310px); */
+  width: 100%;
+  min-width: 100%;
+  max-width: 100%;
   height: auto;
   margin-left: auto;
   margin-top: 80px;

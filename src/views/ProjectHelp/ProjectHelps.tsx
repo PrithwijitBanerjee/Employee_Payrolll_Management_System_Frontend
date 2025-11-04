@@ -7,7 +7,7 @@ import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
 import type { ProjectHelpArrType } from "@/@types/projectHelp";
 import { deleteProjectHelp, getAllProjectHelps } from "@/redux/ProjectHelp/projectHelpSlice";
-import { convertDate } from "@/utils";
+// import { convertDate } from "@/utils";
 import { type FormEvent } from 'react';
 
 const ProjectHelps: React.FC = () => {
@@ -42,20 +42,20 @@ const ProjectHelps: React.FC = () => {
             render: (row: ProjectHelpArrType) => row.tag || "-",
             sortable: true,
         },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: ProjectHelpArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: ProjectHelpArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: ProjectHelpArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: ProjectHelpArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: ProjectHelpArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: ProjectHelpArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: ProjectHelpArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: ProjectHelpArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: ProjectHelpArrType): void => {

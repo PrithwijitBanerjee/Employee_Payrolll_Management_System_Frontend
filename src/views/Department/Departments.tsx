@@ -7,7 +7,7 @@ import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
 import { deleteDepartment, getAllDepartments } from "@/redux/Departments/departmentSlice";
 import type { DepartmentArrType } from "@/@types/department";
-import { convertDate } from "@/utils";
+// import { convertDate } from "@/utils";
 
 const Departments: React.FC = () => {
     const navigate = useNavigate();
@@ -20,6 +20,13 @@ const Departments: React.FC = () => {
 
     // Example dynamic columns
     const columns = [
+        // {
+        //     key: "SL.NO.",
+        //     name: "SL.NO.",
+        //     selector: (_: DepartmentArrType, index: number) => index + 1,
+        //     render: (_: DepartmentArrType, index: number) => index + 1,
+        //     sortable: true, // Disable sorting for serial numbers
+        // },
         {
             key: "DeptCode",
             name: "Deptartment Code",
@@ -41,20 +48,20 @@ const Departments: React.FC = () => {
             render: (row: DepartmentArrType) => row.status?.data || "-",
             sortable: true,
         },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: DepartmentArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: DepartmentArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: DepartmentArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: DepartmentArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: DepartmentArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: DepartmentArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: DepartmentArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: DepartmentArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: DepartmentArrType): void => {

@@ -209,7 +209,7 @@ const DataGrid: React.FC<DataGridProps> = ({
   };
 
   return (
-    <div className="d-flex justify-content-end">
+    <div className="d-flex justify-content-center">
       <div className='form-header mx-2'>
         <section className="piechartsBox_area">
           <div className="card shadow-sm" style={{ width: tableWidth, maxWidth: '1200px' }}>

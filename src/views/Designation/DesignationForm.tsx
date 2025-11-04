@@ -110,7 +110,7 @@ const DesignationForm = () => {
     };
 
     return (
-        <div className='d-flex justify-content-end'>
+        <div className='d-flex justify-content-center'>
             {status === STATUES.LOADING && <Loader />}
             {loading && <Loader />}
             <div className='form-header mx-2'>

@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
-import type { DepartmentArrType } from "@/@types/department";
-import { convertDate } from "@/utils";
+// import type { DepartmentArrType } from "@/@types/department";
+// import { convertDate } from "@/utils";
 import type { EmployeeArrType } from "@/@types/employee";
 import { deleteEmployee, getAllEmployees } from "@/redux/Employees/employeeSlice";
 import EyeIcon from "@/components/commons/EyeIcon";
@@ -92,18 +92,18 @@ const Employees: React.FC = () => {
         },
         {
             key: "EmplTag",
-            name: "Employee Name",
+            name: "Employee Tag",
             selector: (row: EmployeeArrType) => row?.EmplTag || "-",
             render: (row: EmployeeArrType) => row.EmplTag || "-",
             sortable: true,
         },
-        {
-            key: "DOJ",
-            name: "Date Of Joining",
-            selector: (row: EmployeeArrType) => row?.DOJ || "-",
-            render: (row: EmployeeArrType) => row?.DOJ || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "DOJ",
+        //     name: "Date Of Joining",
+        //     selector: (row: EmployeeArrType) => row?.DOJ || "-",
+        //     render: (row: EmployeeArrType) => row?.DOJ || "-",
+        //     sortable: true,
+        // },
         {
             key: "type",
             name: "Employee Type",
@@ -167,13 +167,13 @@ const Employees: React.FC = () => {
             ),
             sortable: true,
         },
-        {
-            key: "DOB",
-            name: "Date Of Birth",
-            selector: (row: EmployeeArrType) => row?.DOB || "-",
-            render: (row: EmployeeArrType) => row?.DOB || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "DOB",
+        //     name: "Date Of Birth",
+        //     selector: (row: EmployeeArrType) => row?.DOB || "-",
+        //     render: (row: EmployeeArrType) => row?.DOB || "-",
+        //     sortable: true,
+        // },
         {
             key: "UserID",
             name: "User Id",
@@ -188,20 +188,20 @@ const Employees: React.FC = () => {
         //     render: (row: EmployeeArrType) => row.status?.data || "-",
         //     sortable: true,
         // },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: DepartmentArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: DepartmentArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: DepartmentArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: DepartmentArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: DepartmentArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: DepartmentArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: DepartmentArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: DepartmentArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: EmployeeArrType): void => {

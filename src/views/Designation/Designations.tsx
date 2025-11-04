@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
-import { convertDate } from "@/utils";
+// import { convertDate } from "@/utils";
 import type { DesignationArrType } from "@/@types/designation";
 import { deleteDesignation, getAllDesignations } from "@/redux/Designations/designationSlice";
 
@@ -41,20 +41,20 @@ const Designations: React.FC = () => {
             render: (row: DesignationArrType) => row?.status?.data || "-",
             sortable: true,
         },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: DesignationArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: DesignationArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: DesignationArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: DesignationArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: DesignationArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: DesignationArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: DesignationArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: DesignationArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: DesignationArrType): void => {

@@ -236,7 +236,7 @@ const EmployeeForm = () => {
     };
 
     return (
-        <div className='d-flex justify-content-end'>
+        <div className='d-flex justify-content-center'>
             {status === STATUES.LOADING && <Loader />}
             {departmentStatus === STATUES.LOADING && <Loader />}
             {designationStatus === STATUES.LOADING && <Loader />}
