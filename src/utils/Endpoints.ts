@@ -56,6 +56,24 @@ const Endpoints = {
     updateProject: "admin/update-project",
     deleteProject: "admin/delete-project",
 
+    /** ... job details related endpoints ... **/
+    addJobDetails: "admin/create-jobs",
+    getAllJobDetails: "admin/get-jobs",
+    getJobDetailsById: "admin/get-job",
+    updateJobDetails: "admin/update-job",
+    deleteJobDetails: "admin/delete-job",
+
+    /** ... job master related endpoints ... **/
+    getAllJobMasters: "admin/get-jobmasts",
+    updateJobMaster: "admin/update-jobmast",
+
+    /** ... task detail related endpoints ... **/
+    createTask: "admin/create-task",
+    getAllTasks: "admin/get-tasks",
+    getTaskByCode: "admin/get-task",
+    updateTask: "admin/update-task",
+    deleteTask: "admin/delete-task",
+
 };
 
 export const Logout = 419;

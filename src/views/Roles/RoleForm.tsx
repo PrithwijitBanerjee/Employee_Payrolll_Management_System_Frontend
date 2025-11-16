@@ -25,7 +25,7 @@ const RoleForm = () => {
     useEffect(() => {
         if (isEdit && id) {
             setLoading(true);
-            dispatch(getRoleById(+id)).then(() => {
+            dispatch(getRoleById(id)).then(() => {
                 setLoading(false);
             });
         }
@@ -76,7 +76,7 @@ const RoleForm = () => {
             }
 
             dispatch(updateRole({
-                id: +id,
+                id,
                 role: formData?.role || "",
             }));
             navigate("/role/view");

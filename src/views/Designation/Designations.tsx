@@ -20,13 +20,13 @@ const Designations: React.FC = () => {
 
     // Example dynamic columns
     const columns = [
-        {
-            key: "DesgCode",
-            name: "Designation Code",
-            selector: (_: DesignationArrType) => _.DesgCode,
-            render: (_: DesignationArrType) => _.DesgCode,
-            sortable: false, // Disable sorting for serial numbers
-        },
+        // {
+        //     key: "DesgCode",
+        //     name: "Designation Code",
+        //     selector: (_: DesignationArrType) => _.DesgCode,
+        //     render: (_: DesignationArrType) => _.DesgCode,
+        //     sortable: false, // Disable sorting for serial numbers
+        // },
         {
             key: "DesgName",
             name: "Designation Name",

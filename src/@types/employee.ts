@@ -10,6 +10,7 @@ export type EmployeeInpType = {
     Password: string,
     EmplStatus: string,
     Email: string,
+    role?: string,
 };
 
 export type EmployeeSlice = {
@@ -38,6 +39,7 @@ export type UpdateEmployeeType = {
     Password: string,
     EmplStatus: string,
     Email: string,
+    role?: string,
 };
 
 export type EmployeeArrType = {

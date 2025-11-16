@@ -27,13 +27,13 @@ const Departments: React.FC = () => {
         //     render: (_: DepartmentArrType, index: number) => index + 1,
         //     sortable: true, // Disable sorting for serial numbers
         // },
-        {
-            key: "DeptCode",
-            name: "Deptartment Code",
-            selector: (_: DepartmentArrType) => _.DeptCode,
-            render: (_: DepartmentArrType) => _.DeptCode,
-            sortable: false, // Disable sorting for serial numbers
-        },
+        // {
+        //     key: "DeptCode",
+        //     name: "Deptartment Code",
+        //     selector: (_: DepartmentArrType) => _.DeptCode,
+        //     render: (_: DepartmentArrType) => _.DeptCode,
+        //     sortable: false, // Disable sorting for serial numbers
+        // },
         {
             key: "DeptName",
             name: "Department Name",

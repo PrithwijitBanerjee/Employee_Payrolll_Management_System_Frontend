@@ -17,6 +17,7 @@ interface UserData {
 const Header = () => {
     const [showLogoutModal, setShowLogoutModal] = useState<boolean>(false);
     const { userData } = useAppSelector(state => state?.auth);
+    console.log("userData: ", userData);
     const dispatch = useAppDispatch();
 
     const navigate = useNavigate();
@@ -60,6 +61,8 @@ const Header = () => {
         "/designation/add",
         "/client/add",
         "/employee/add",
+        "/jobDtl/manage",
+        "/taskDtl/manage",
     ].some(p => isClientsActive(p));
 
     return (
@@ -94,27 +97,54 @@ const Header = () => {
                             className="dropdown-menu"
                             aria-labelledby="masterSetupDropdown"
                         >
-                            <NavLink className="dropdown-item" to="/">
-                                <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/role/add">
-                                <i className="fa-solid fa-user-shield mr-2"></i> Role
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/projectHelp/add">
-                                <i className="fa-solid fa-circle-question mr-2"></i> Project Help
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/department/add">
-                                <i className="fa-solid fa-building mr-2"></i> Department
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/designation/add">
-                                <i className="fa-solid fa-user-tie mr-2"></i> Designation
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/client/add">
-                                <i className="fa-solid fa-users mr-2"></i> Clients
-                            </NavLink>
-                            <NavLink className="dropdown-item" to="/employee/add">
-                                <i className="fa-solid fa-landmark mr-2"></i> Employee
-                            </NavLink>
+                            {
+                                userData?.role === "001" ? (
+                                    <>
+                                        <NavLink className="dropdown-item" to="/">
+                                            <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/role/add">
+                                            <i className="fa-solid fa-user-shield mr-2"></i> Role
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/projectHelp/add">
+                                            <i className="fa-solid fa-circle-question mr-2"></i> Project Help
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/department/add">
+                                            <i className="fa-solid fa-building mr-2"></i> Department
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/designation/add">
+                                            <i className="fa-solid fa-user-tie mr-2"></i> Designation
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/client/add">
+                                            <i className="fa-solid fa-users mr-2"></i> Clients
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/employee/add">
+                                            <i className="fa-solid fa-landmark mr-2"></i> Employee
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/project/add">
+                                            <i className="fa-solid fa-diagram-project mr-2"></i> Project
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/jobDtl/manage">
+                                            <i className="fa-solid fa-briefcase mr-2"></i> Job Management
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/taskDtl/manage">
+                                            <i className="fa-solid fa-list-check mr-2"></i> Task Management
+                                        </NavLink>
+                                    </>
+                                ) : (
+                                    <>
+                                        <NavLink className="dropdown-item" to="/">
+                                            <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/jobDtl/manage">
+                                            <i className="fa-solid fa-briefcase mr-2"></i> Job Management
+                                        </NavLink>
+                                        <NavLink className="dropdown-item" to="/taskDtl/manage">
+                                            <i className="fa-solid fa-list-check mr-2"></i> Task Management
+                                        </NavLink>
+                                    </>
+                                )
+                            }
                         </div>
                     </div>
                 </div>
@@ -134,7 +164,7 @@ const Header = () => {
                         <div className="Accountdetails">
                             <div className="profile_pic">
                                 {/* <img src={profileP} className="img-fluid" alt="user" /> */}
-                                <DefaultProfile name={userData?.name || "Anonymous" as string} width={40} />
+                                <DefaultProfile name={userData?.EmplName || "Anonymous" as string} width={40} />
                             </div>
                             <div className="namearea">
                                 <div className="dropdown">
@@ -147,7 +177,7 @@ const Header = () => {
                                         aria-haspopup="true"
                                         aria-expanded="false"
                                     >
-                                        <strong>Hello {userData?.name?.split(" ")?.[0] || "Anonymous"}</strong>
+                                        <strong>Hello {userData?.EmplName?.split(" ")?.[0] || "Anonymous"}</strong>
                                         <span>{userEmail}</span>
                                     </Link>
                                     <div

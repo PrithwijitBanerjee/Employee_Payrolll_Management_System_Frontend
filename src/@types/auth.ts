@@ -6,8 +6,9 @@ type RoleNameType = {
 type UserDataType = {
     id: number,
     name: string | null,
+    EmplName: string | null,
     email: string | null;
-    role: number | null,
+    role: number | string | null,
     createdAt: string | null,
     updatedAt: string | null,
     roleName?: RoleNameType | null,

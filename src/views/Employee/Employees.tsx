@@ -76,13 +76,13 @@ const Employees: React.FC = () => {
 
     // Example dynamic columns
     const columns = [
-        {
-            key: "EmplCode",
-            name: "Employee Code",
-            selector: (_: EmployeeArrType) => _.EmplCode,
-            render: (_: EmployeeArrType) => _.EmplCode,
-            sortable: false, // Disable sorting for serial numbers
-        },
+        // {
+        //     key: "EmplCode",
+        //     name: "Employee Code",
+        //     selector: (_: EmployeeArrType) => _.EmplCode,
+        //     render: (_: EmployeeArrType) => _.EmplCode,
+        //     sortable: false, // Disable sorting for serial numbers
+        // },
         {
             key: "EmplName",
             name: "Employee Name",

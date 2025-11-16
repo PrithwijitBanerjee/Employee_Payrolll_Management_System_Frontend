@@ -13,6 +13,8 @@ import DesignationRoute from "@/routes/Designations/DesignationRoute";
 import ClientRoute from "./Clients/ClientRoute";
 import EmployeeRoute from "./Employees/EmployeeRoute";
 import ProjectRoute from "./Projects/ProjectRoute";
+import JobDetailRoute from "./JobDetail/JobDetailRoute";
+import TaskRoute from "./Tasks/TaskRoute";
 
 const ProjectRoutes: React.FC = () => {
     return (
@@ -46,6 +48,12 @@ const ProjectRoutes: React.FC = () => {
 
                         {/* ...All Project related Route defined here ... */}
                         <Route path="/project/*" element={<ProjectRoute />} />
+
+                        {/* ...All Job Detail related Route defined here ... */}
+                        <Route path="/jobDtl/*" element={<JobDetailRoute />} />
+
+                        {/* ...All Task Detail related Route defined here ... */}
+                        <Route path="/taskDtl/*" element={<TaskRoute />} />
                     </Route>
                 </Route>
             </Routes>

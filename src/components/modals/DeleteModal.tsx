@@ -61,7 +61,9 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
 
                 <div className={styles.body}>
                     <p className={styles.message}>
-                        Are you sure you want to delete <strong>{itemName}</strong>
+                       {
+                        itemName &&  <>Are you sure you want to delete <strong>{itemName}</strong></>
+                       }
                         {itemId && <> (ID: {itemId})</>}?
                         This action cannot be undone.
                     </p>

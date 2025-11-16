@@ -24,5 +24,5 @@ export type RoleInputType = {
 
 export type UpdateRoleInpType = {
    role: string,
-   id: number,
+   id: number | string,
 };

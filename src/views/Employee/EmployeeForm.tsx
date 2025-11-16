@@ -26,6 +26,7 @@ const INITIAL_FORM_DATA: EmployeeInpType = {
     Password: "",
     EmplStatus: "",
     Email: "",
+    role: "002", // Default role for Employee
 };
 
 const EmployeeForm = () => {
@@ -84,6 +85,7 @@ const EmployeeForm = () => {
                 Password: employeeData?.Password ?? "",
                 EmplStatus: employeeData?.EmplStatus ?? "",
                 Email: employeeData?.Email ?? "",
+                role: employeeData?.role ?? "002",
             });
         }
     }, [isEdit, employee]);
@@ -227,6 +229,7 @@ const EmployeeForm = () => {
                 Password: formData.Password,
                 EmplStatus: formData.EmplStatus,
                 Email: formData.Email,
+                role: formData.role || "002",
             }));
             setFormData(INITIAL_FORM_DATA);
             navigate("/employee/view");

@@ -10,6 +10,9 @@ import designationSlice from "./Designations/designationSlice";
 import clientSlice from "./Clients/clientSlice";
 import employeeSlice from "./Employees/employeeSlice";
 import projectSlice from "./Projects/projectSlice";
+import jobDetailSlice from "./JobDetail/jobDetailSlice";
+import jobMasterSlice from "./JobMaster/jobMasterSlice";
+import taskDetailSlice from "./TaskDetail/taskDetailSlice";
 
 const persistConfig = {
     key: "root",
@@ -26,6 +29,9 @@ const reducer = combineReducers({
     employee: employeeSlice.reducer,
     client: clientSlice.reducer,
     project: projectSlice.reducer,
+    jobDetail: jobDetailSlice.reducer,
+    jobMaster: jobMasterSlice.reducer,
+    taskDetail: taskDetailSlice.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

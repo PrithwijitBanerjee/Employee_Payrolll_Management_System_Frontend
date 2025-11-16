@@ -22,13 +22,13 @@ const Projects: React.FC = () => {
 
     // Example dynamic columns
     const columns = [
-        {
-            key: "ProjectCode",
-            name: "Project Code",
-            selector: (row: ProjectArrType) => row?.ProjectCode || "-",
-            render: (row: ProjectArrType) => row.ProjectCode || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "ProjectCode",
+        //     name: "Project Code",
+        //     selector: (row: ProjectArrType) => row?.ProjectCode || "-",
+        //     render: (row: ProjectArrType) => row.ProjectCode || "-",
+        //     sortable: true,
+        // },
         {
             key: "ProjectName",
             name: "Project Name",
@@ -81,7 +81,9 @@ const Projects: React.FC = () => {
         try {
             // console.log("delete id: ", row.code);
 
-            dispatch(deleteProject(row.ProjectCode));
+            dispatch(deleteProject(row.ProjectCode)).then(() => {
+                dispatch(getAllProjects());
+            });
         } catch (error: any) {
             toast.error(error?.message || "Failed to delete logo");
         }

@@ -20,13 +20,13 @@ const Clients: React.FC = () => {
 
     // Example dynamic columns
     const columns = [
-        {
-            key: "ClientCode",
-            name: "Client Code",
-            selector: (_: ClientArrType) => _.ClientCode,
-            render: (_: ClientArrType) => _.ClientCode,
-            sortable: false, // Disable sorting for serial numbers
-        },
+        // {
+        //     key: "ClientCode",
+        //     name: "Client Code",
+        //     selector: (_: ClientArrType) => _.ClientCode,
+        //     render: (_: ClientArrType) => _.ClientCode,
+        //     sortable: false, // Disable sorting for serial numbers
+        // },
         {
             key: "ClientName",
             name: "Client Name",

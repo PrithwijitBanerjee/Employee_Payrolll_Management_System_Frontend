@@ -17,6 +17,8 @@ const Roles: React.FC = () => {
         dispatch(getAllRoles());
     }, [dispatch]);
 
+    // console.log("roles: ", roles);
+
     // Example dynamic columns
     const columns = [
         {
@@ -36,14 +38,16 @@ const Roles: React.FC = () => {
     ];
 
     const handleEdit = (row: RoleArrType): void => {
-        navigate(`/role/update/${row?.id}/true`);
+        navigate(`/role/update/${row?.code}/true`);
     };
 
     const handleDelete = async (row: RoleArrType): Promise<void> => {
         try {
             // console.log("delete code: ", row.code);
 
-            dispatch(deleteRole(row.code));
+            dispatch(deleteRole(row.code)).then(() => {
+                dispatch(getAllRoles());
+            });
         } catch (error: any) {
             toast.error(error?.message || "Failed to delete role");
         }

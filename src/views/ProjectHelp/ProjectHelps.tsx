@@ -66,7 +66,9 @@ const ProjectHelps: React.FC = () => {
         try {
             // console.log("delete id: ", row.code);
 
-            dispatch(deleteProjectHelp(row.code));
+            dispatch(deleteProjectHelp(row.code)).then(() => {
+                dispatch(getAllProjectHelps());
+            });
         } catch (error: any) {
             toast.error(error?.message || "Failed to delete logo");
         }
