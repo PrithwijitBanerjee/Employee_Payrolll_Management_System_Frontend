@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
-import type { ProjectHelpArrType } from "@/@types/projectHelp";
-import { convertDate } from "@/utils";
+// import type { ProjectHelpArrType } from "@/@types/projectHelp";
+// import { convertDate } from "@/utils";
 import { type FormEvent } from "react";
 import { deleteProject, getAllProjects } from "@/redux/Projects/projectSlice";
 import type { ProjectArrType } from "@/@types/project";
@@ -57,20 +57,20 @@ const Projects: React.FC = () => {
             render: (row: ProjectArrType) => row.IGSTRate || "-",
             sortable: true,
         },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: ProjectHelpArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: ProjectHelpArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: ProjectHelpArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: ProjectHelpArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: ProjectHelpArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: ProjectHelpArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: ProjectHelpArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: ProjectHelpArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: ProjectArrType): void => {

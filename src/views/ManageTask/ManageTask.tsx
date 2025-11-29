@@ -6,10 +6,11 @@ import Loader from '@/components/commons/Loader';
 import { getProjectHelpByTag } from '@/redux/ProjectHelp/projectHelpSlice';
 import type { ProjectHelpArrType } from '@/@types/projectHelp';
 import type { JobDetailType } from '@/@types/jobDetails';
-import { addTaskDetail, deleteTaskDetail, getAllTaskDetails, getTaskDetailById, updateTaskDetail } from '@/redux/TaskDetail/taskDetailSlice';
+import { deleteTaskDetail, getAllManagedTaskDetails, getTaskDetailById, rescheduleTaskDetail, updateTaskDetail } from '@/redux/TaskDetail/taskDetailSlice';
 import { getAllJobDetails } from '@/redux/JobDetail/jobDetailSlice';
 import DeleteModal from '@/components/modals/DeleteModal';
 import { getAllEmployees } from '@/redux/Employees/employeeSlice';
+import toast from 'react-hot-toast';
 
 const INITIAL_FORM_DATA = {
     JobNo: "",
@@ -90,13 +91,16 @@ const EmployeeSelectionModal = ({
     );
 };
 
-const TaskDetail = () => {
+const ManageTask = () => {
 
     const [formData, setFormData] = useState<TASKINPTYPE>(INITIAL_FORM_DATA);
     const [editingIndex, setEditingIndex] = useState<boolean>(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
     const [taskToDelete, setTaskToDelete] = useState<TaskArrType | null>(null);
     const [employeeModalOpen, setEmployeeModalOpen] = useState<boolean>(false);
+    const [copyModalModalOpen, setCopyModalOpen] = useState<boolean>(false);
+    const [manageTask, setManageTask] = useState<boolean>(false);
+    const [encodedTaskId, setEncodedTaskId] = useState<string>("");
 
     const dispatch = useAppDispatch();
     const { taskDetail, taskDetails, status } = useAppSelector(state => state?.taskDetail);
@@ -107,7 +111,7 @@ const TaskDetail = () => {
     useEffect(() => {
         dispatch(getProjectHelpByTag("02"));
         dispatch(getAllJobDetails());
-        dispatch(getAllTaskDetails());
+        dispatch(getAllManagedTaskDetails());
         dispatch(getAllEmployees());
     }, [dispatch]);
 
@@ -149,11 +153,19 @@ const TaskDetail = () => {
         }));
     };
 
+    // Handle employee select for copy ....
+    const handleEmployeeSelectForCopy = (employeeCode: string) => {
+        dispatch(rescheduleTaskDetail({
+            id: encodedTaskId,
+            JobTo: employeeCode,
+        }));
+    };
+
     // Handle form submission
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (editingIndex) {
+        if (manageTask) {
             // Update existing task
             const dataToEdit: UpdateTaskDetailType = {
                 JobNo: formData?.JobNo ? String(formData?.JobNo) : String((jobDetails as JobDetailType[])?.[0]?.JobNo ?? ""),
@@ -167,25 +179,12 @@ const TaskDetail = () => {
             };
             dispatch(updateTaskDetail(dataToEdit)).then(() => {
                 // Refresh the task detail table ...
-                dispatch(getAllTaskDetails());
+                dispatch(getAllManagedTaskDetails());
             });
             setEditingIndex(!editingIndex);
         } else {
-            // Add new task
-            const dataToSubmit = {
-                JobNo: formData?.JobNo ? String(formData?.JobNo) : String((jobDetails as JobDetailType[])?.[0]?.JobNo ?? ""),
-                TaskStatus: formData?.TaskStatus ? formData?.TaskStatus : (projectHelps as ProjectHelpArrType[])?.[0]?.code,
-                StartTime: formData?.StartTime,
-                EndTime: formData?.EndTime,
-                Particulars: formData?.Particulars,
-                Remarks: formData?.Remarks,
-                JobTo: formData?.JobTo,
-            };
 
-            dispatch(addTaskDetail(dataToSubmit as TASKINPTYPE)).then(() => {
-                // Refresh the task detail table ...
-                dispatch(getAllTaskDetails());
-            });
+            toast.error("Please select task before proceed!!!");
         }
 
         // Reset form
@@ -224,6 +223,12 @@ const TaskDetail = () => {
         setEditingIndex(true);
     };
 
+    // Copy task to reschedule ....
+    const handleCopyTask = (task: TaskArrType) => {
+        setEncodedTaskId(encodeURIComponent(task?.TaskId));
+        setCopyModalOpen(true);
+    };
+
     // Open delete confirmation modal
     const handleDeleteClick = (task: TaskArrType) => {
         setTaskToDelete(task);
@@ -234,7 +239,7 @@ const TaskDetail = () => {
     const handleConfirmDelete = async (): Promise<void> => {
         if (taskToDelete) {
             await dispatch(deleteTaskDetail(encodeURIComponent(taskToDelete.TaskId as string)));
-            dispatch(getAllTaskDetails()); // Refresh the task table ...
+            dispatch(getAllManagedTaskDetails()); // Refresh the task table ...
             setDeleteModalOpen(false);
             setTaskToDelete(null);
         }
@@ -294,13 +299,21 @@ const TaskDetail = () => {
                 employees={employees}
             />
 
+            {/* Employee Selection Modal For Copy */}
+            <EmployeeSelectionModal
+                isOpen={copyModalModalOpen}
+                onClose={() => setCopyModalOpen(false)}
+                onSelectEmployee={handleEmployeeSelectForCopy}
+                employees={employees}
+            />
+
             <div className="row">
                 <div className="col-12">
                     <div className="card shadow-sm mb-4">
                         <div className="card-header bg-primary text-white">
                             <h4 className="mb-0">
                                 <i className="bi bi-clipboard-plus me-2"></i>
-                                {editingIndex ? 'Edit Task' : 'Create New Task'}
+                                {editingIndex ? 'Manage Task' : 'Manage Task'}
                             </h4>
                         </div>
                         <div className="card-body">
@@ -426,7 +439,6 @@ const TaskDetail = () => {
                                     <div className="col-md-6 my-3">
                                         <label htmlFor="TaskStatus" className="form-label">Task Status</label>
                                         <select
-                                            disabled={true}
                                             style={{
                                                 display: "block",
                                             }}
@@ -465,7 +477,7 @@ const TaskDetail = () => {
                                         <div className="d-flex gap-2">
                                             <button type="submit" className="btn btn-primary">
                                                 <i className="bi bi-check-circle me-2"></i>
-                                                {editingIndex ? 'Update Task' : 'Create Task'}
+                                                {editingIndex ? 'Manage Task' : 'Manage Task'}
                                             </button>
                                             {editingIndex && (
                                                 <button type="button" className="btn btn-secondary mx-2" onClick={handleCancel}>
@@ -488,7 +500,7 @@ const TaskDetail = () => {
                         <div className="card-header bg-success text-white">
                             <h4 className="mb-0">
                                 <i className="bi bi-list-task me-2"></i>
-                                All Created Task List ({taskDetails.length} tasks)
+                                All Submitted Task List ({taskDetails.length} tasks)
                             </h4>
                         </div>
                         <div className="card-body p-0">
@@ -510,8 +522,9 @@ const TaskDetail = () => {
                                                 <th scope="col">End Time</th>
                                                 <th scope="col">Duration Min</th>
                                                 <th scope="col">Description</th>
+                                                <th scope="col">Remarks</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col" className="text-center d-none">Actions</th>
+                                                <th scope="col" className="text-center">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -530,6 +543,11 @@ const TaskDetail = () => {
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div className="text-truncate" style={{ maxWidth: '200px' }} title={task.Particulars}>
+                                                            {task?.Remarks || "-"}
+                                                        </div>
+                                                    </td>
+                                                    <td>
                                                         <span className={`badge ${getStatusBadgeClass(task.status?.data)}`}>
                                                             {getStatusLabel(task.status?.data)}
                                                         </span>
@@ -538,16 +556,28 @@ const TaskDetail = () => {
                                                         <div className="btn-group btn-group-sm">
                                                             <button
                                                                 type="button"
-                                                                className="btn btn-outline-primary d-none"
-                                                                onClick={() => handleEdit(task)}
+                                                                className="btn btn-outline-primary"
+                                                                onClick={() => handleCopyTask(task)}
                                                                 title="Edit task"
                                                             >
                                                                 <i className="bi bi-pencil"></i>
-                                                                Edit
+                                                                Copy
                                                             </button>
                                                             <button
                                                                 type="button"
-                                                                className="btn btn-outline-danger mx-2 d-none"
+                                                                className="btn btn-outline-primary mx-2"
+                                                                onClick={() => {
+                                                                    handleEdit(task);
+                                                                    setManageTask(true);
+                                                                }}
+                                                                title="Edit task"
+                                                            >
+                                                                <i className="bi bi-pencil"></i>
+                                                                Select Task
+                                                            </button>
+                                                            <button
+                                                                type="button"
+                                                                className="btn btn-outline-danger mx-2"
                                                                 onClick={() => handleDeleteClick(task)}
                                                                 title="Delete task"
                                                             >
@@ -579,4 +609,4 @@ const TaskDetail = () => {
     );
 };
 
-export default TaskDetail;
+export default ManageTask;

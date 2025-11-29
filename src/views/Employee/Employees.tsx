@@ -9,7 +9,7 @@ import { STATUES } from "@/utils/Status";
 // import { convertDate } from "@/utils";
 import type { EmployeeArrType } from "@/@types/employee";
 import { deleteEmployee, getAllEmployees } from "@/redux/Employees/employeeSlice";
-import EyeIcon from "@/components/commons/EyeIcon";
+// import EyeIcon from "@/components/commons/EyeIcon";
 import DetailShowModal from "@/components/modals/DetailShowModal";
 
 const Employees: React.FC = () => {
@@ -25,28 +25,6 @@ const Employees: React.FC = () => {
 
     // State for status filter
     const [statusFilter, setStatusFilter] = useState<string>("Active");
-
-    // Handle view department details
-    const handleViewDepartment = (row: EmployeeArrType): void => {
-        // Assuming the employee object has a department property
-        if (row.department) {
-            setSelectedDepartment(row.department);
-            setIsModalOpen(true);
-        } else {
-            toast.error("No department details available");
-        }
-    };
-
-    // Handle view designation details
-    const handleViewDesg = (row: EmployeeArrType): void => {
-        // Assuming the employee object has a department property
-        if (row.designation) {
-            setSelectedDesg(row.designation);
-            setIsModalOpenDesg(true);
-        } else {
-            toast.error("No department details available");
-        }
-    };
 
     // Close modal
     const handleCloseModal = (): void => {
@@ -115,56 +93,14 @@ const Employees: React.FC = () => {
             key: "department",
             name: "Department",
             selector: (row: EmployeeArrType) => row?.department?.DeptName || "-",
-            render: (row: EmployeeArrType) => (
-                <div className="department-cell" style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    minWidth: "100%",
-                    maxWidth: "100%",
-                }}>
-                    {/* <span>{row.department?.DeptName || "-"}</span> */}
-                    <button
-                        className="view-department-btn"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleViewDepartment(row);
-                        }}
-                        title="View Department Details"
-                    >
-                        <EyeIcon />
-                    </button>
-                </div>
-            ),
+            render: (row: EmployeeArrType) => row?.department?.DeptName || "-",
             sortable: true,
         },
         {
             key: "designation",
             name: "Designation",
             selector: (row: EmployeeArrType) => row?.designation?.DesgName || "-",
-            render: (row: EmployeeArrType) => (
-                <div className="department-cell" style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: "100%",
-                    minWidth: "100%",
-                    maxWidth: "100%",
-                }}>
-                    {/* <span>{row.department?.DeptName || "-"}</span> */}
-                    <button
-                        className="view-department-btn"
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleViewDesg(row);
-                        }}
-                        title="View Department Details"
-                    >
-                        <EyeIcon />
-                    </button>
-                </div>
-            ),
+            render: (row: EmployeeArrType) => row?.designation?.DesgName || "-",
             sortable: true,
         },
         // {

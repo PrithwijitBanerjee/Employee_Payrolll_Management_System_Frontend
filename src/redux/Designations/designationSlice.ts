@@ -10,6 +10,7 @@ const initialState: DesignationSlice = {
     error: null,
     designation: null,
     designations: [],
+    desgCode: null,
 };
 
 export const getAllDesignations = createAsyncThunk<DesignationRespType, void>("user/designations/fetch/Job", async (_, { rejectWithValue }) => {
@@ -124,10 +125,12 @@ const designationSlice = createSlice({
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
+                    state.desgCode = payload?.data?.DesgCode;
                     toast.success(payload?.message);
                 } else {
                     state.status = STATUES.ERROR;
                     state.error = payload.message || null;
+                    state.desgCode = null;
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
             })

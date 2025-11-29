@@ -3,6 +3,7 @@ export type DepartmentSlice = {
     error: any,
     departments: [],
     department: object | null,
+    deptCode?: string | any,
 };
 
 export type DepartmentType = {

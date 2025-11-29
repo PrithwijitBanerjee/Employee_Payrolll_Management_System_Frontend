@@ -8,6 +8,9 @@ import { useAppDispatch, useAppSelector } from "@/redux/store";
 // import LogoutModal from "../components/modal/LogoutModal";
 import LogoutModal from "@/components/modals/LogoutModal";
 import { logoutUser } from "@/redux/Authentication/authSlice";
+import toast from "react-hot-toast";
+import { generateReportAllotedToMe } from "@/MISReports/allotedToMe";
+import { generateReportAllotedToOthers } from "@/MISReports/allotedToOthers";
 
 interface UserData {
     email?: string;
@@ -61,9 +64,75 @@ const Header = () => {
         "/designation/add",
         "/client/add",
         "/employee/add",
+    ].some(p => isClientsActive(p));
+
+    // Active state for Job (underline when any sub-route is active)
+    const isJobActive = [
         "/jobDtl/manage",
+    ].some(p => isClientsActive(p));
+
+    // Active state for Job (underline when any sub-route is active)
+    const isTaskActive = [
         "/taskDtl/manage",
     ].some(p => isClientsActive(p));
+
+    const handleAllotedToMeReport = async (): Promise<any> => {
+        try {
+            const arrayBuffer = await generateReportAllotedToMe(); // now ArrayBuffer
+
+            if (!arrayBuffer) {
+                toast.error("No report data received");
+                return;
+            }
+
+            // Create a Blob from the binary data
+            const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+            // console.log("blob: ", blob);
+
+            const fileURL = URL.createObjectURL(blob);
+
+            // Open in new tab
+            const newWindow = window.open(fileURL, "_blank", "noopener,noreferrer");
+            if (!newWindow) {
+                // toast.error("Please allow pop‑ups to view the report.");
+            }
+
+            // Cleanup
+            setTimeout(() => URL.revokeObjectURL(fileURL), 60_000);
+        } catch (error) {
+            const errorMessage = (error as any)?.message || "Something went wrong!!!";
+            toast.error(errorMessage);
+        }
+    };
+
+    const handleAllotedToOthersReport = async (): Promise<any> => {
+        try {
+            const arrayBuffer = await generateReportAllotedToOthers(); // now ArrayBuffer
+
+            if (!arrayBuffer) {
+                toast.error("No report data received");
+                return;
+            }
+
+            // Create a Blob from the binary data
+            const blob = new Blob([arrayBuffer], { type: "application/pdf" });
+            // console.log("blob: ", blob);
+
+            const fileURL = URL.createObjectURL(blob);
+
+            // Open in new tab
+            const newWindow = window.open(fileURL, "_blank", "noopener,noreferrer");
+            if (!newWindow) {
+                // toast.error("Please allow pop‑ups to view the report.");
+            }
+
+            // Cleanup
+            setTimeout(() => URL.revokeObjectURL(fileURL), 60_000);
+        } catch (error) {
+            const errorMessage = (error as any)?.message || "Something went wrong!!!";
+            toast.error(errorMessage);
+        }
+    };
 
     return (
         <>
@@ -78,73 +147,121 @@ const Header = () => {
                     <i className="fa-solid fa-magnifying-glass"></i>
                 </button>
 
-                <div className="Search_box">
+                <div className="Search_box" style={{
+                    display: "flex",
+                }}>
                     {/* Master Setup dropdown */}
                     <div className="dropdown">
+                        {
+                            userData?.role === "001" && (
+                                <Link
+                                    className={`dropdown-toggle ${isMasterActive ? "text_underline" : ""}`}
+                                    to="/"
+                                    id="masterSetupDropdown"
+                                    role="button"
+                                    data-toggle="dropdown"
+                                    aria-haspopup="true"
+                                    aria-expanded="false"
+                                >
+                                    <i className="fa-solid fa-screwdriver-wrench"></i>
+                                    <span className="mx-2">Master Setup</span>
+                                </Link>
+                            )
+                        }
+                        <div
+                            className="dropdown-menu"
+                            aria-labelledby="masterSetupDropdown"
+                        >
+                            <NavLink className="dropdown-item" to="/">
+                                <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/role/add">
+                                <i className="fa-solid fa-user-shield mr-2"></i> Role
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/projectHelp/add">
+                                <i className="fa-solid fa-circle-question mr-2"></i> Project Help
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/department/add">
+                                <i className="fa-solid fa-building mr-2"></i> Department
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/designation/add">
+                                <i className="fa-solid fa-user-tie mr-2"></i> Designation
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/client/add">
+                                <i className="fa-solid fa-users mr-2"></i> Clients
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/employee/add">
+                                <i className="fa-solid fa-landmark mr-2"></i> Employee
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/project/add">
+                                <i className="fa-solid fa-diagram-project mr-2"></i> Project
+                            </NavLink>
+                        </div>
+
+                        {/* ... Job Main menu in header ... */}
                         <Link
-                            className={`dropdown-toggle ${isMasterActive ? "text_underline" : ""}`}
-                            to="/"
-                            id="masterSetupDropdown"
+                            className={`${isJobActive ? "text_underline" : ""}`}
+                            to="/jobDtl/manage"
+                        >
+                            <i className="fa-solid fa-briefcase mr-2"></i>
+                            <span className="mx-2">Job</span>
+                        </Link>
+                    </div>
+
+                    {/* Task Setup dropdown */}
+                    <div className="dropdown">
+                        <Link
+                            className={`dropdown-toggle ${isTaskActive ? "text_underline" : ""}`}
+                            to="#"
+                            id="taskSetupDropdown"
                             role="button"
                             data-toggle="dropdown"
                             aria-haspopup="true"
                             aria-expanded="false"
                         >
-                            <i className="fa-solid fa-screwdriver-wrench"></i>
-                            <span className="mx-2">Master Setup</span>
+                            <i className="fa-solid fa-list-check"></i>
+                            <span className="mx-2">Task Setup</span>
                         </Link>
                         <div
                             className="dropdown-menu"
-                            aria-labelledby="masterSetupDropdown"
+                            aria-labelledby="taskSetupDropdown"
                         >
-                            {
-                                userData?.role === "001" ? (
-                                    <>
-                                        <NavLink className="dropdown-item" to="/">
-                                            <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/role/add">
-                                            <i className="fa-solid fa-user-shield mr-2"></i> Role
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/projectHelp/add">
-                                            <i className="fa-solid fa-circle-question mr-2"></i> Project Help
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/department/add">
-                                            <i className="fa-solid fa-building mr-2"></i> Department
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/designation/add">
-                                            <i className="fa-solid fa-user-tie mr-2"></i> Designation
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/client/add">
-                                            <i className="fa-solid fa-users mr-2"></i> Clients
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/employee/add">
-                                            <i className="fa-solid fa-landmark mr-2"></i> Employee
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/project/add">
-                                            <i className="fa-solid fa-diagram-project mr-2"></i> Project
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/jobDtl/manage">
-                                            <i className="fa-solid fa-briefcase mr-2"></i> Job Management
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/taskDtl/manage">
-                                            <i className="fa-solid fa-list-check mr-2"></i> Task Management
-                                        </NavLink>
-                                    </>
-                                ) : (
-                                    <>
-                                        <NavLink className="dropdown-item" to="/">
-                                            <i className="fa-solid fa-chart-line mr-2"></i> Dashboard
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/jobDtl/manage">
-                                            <i className="fa-solid fa-briefcase mr-2"></i> Job Management
-                                        </NavLink>
-                                        <NavLink className="dropdown-item" to="/taskDtl/manage">
-                                            <i className="fa-solid fa-list-check mr-2"></i> Task Management
-                                        </NavLink>
-                                    </>
-                                )
-                            }
+                            <NavLink className="dropdown-item" to="/taskDtl/create">
+                                <i className="fa-solid fa-plus-circle mr-2"></i> Create Task
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/taskDtl/manage">
+                                <i className="fa-solid fa-pen-to-square mr-2"></i> Manage Task
+                            </NavLink>
+                            <NavLink className="dropdown-item" to="/taskDtl/alloted">
+                                <i className="fa-solid fa-user-check mr-2"></i> Alloted Task
+                            </NavLink>
+                        </div>
+                    </div>
+
+                    {/* View Reports dropdown */}
+                    <div className="dropdown">
+                        <Link
+                            className={`dropdown-toggle ${isTaskActive ? "text_underline" : ""}`}
+                            to="#"
+                            id="reportSetupDropdown"
+                            role="button"
+                            data-toggle="dropdown"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            <i className="fa-solid fa-chart-column"></i>
+                            <span className="mx-2">View Reports</span>
+                        </Link>
+                        <div
+                            className="dropdown-menu"
+                            aria-labelledby="reportSetupDropdown"
+                        >
+                            <Link className="dropdown-item" to="" onClick={handleAllotedToMeReport}>
+                                <i className="fa-solid fa-user-check mr-2"></i> Alloted To Me
+                            </Link>
+                            <Link className="dropdown-item" to="" onClick={handleAllotedToOthersReport}>
+                                <i className="fa-solid fa-users mr-2"></i> Alloted To Others
+                            </Link>
                         </div>
                     </div>
                 </div>

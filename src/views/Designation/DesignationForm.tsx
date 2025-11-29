@@ -18,7 +18,7 @@ const INITIAL_FORM_DATA: DesignationInpType = {
 
 const DesignationForm = () => {
     const navigate = useNavigate();
-    const { isEdit, id } = useParams<{ isEdit?: string; id?: string }>();
+    const { isEdit, id, flag } = useParams<{ isEdit?: string; id?: string, flag?: boolean | any }>();
 
     const [formData, setFormData] = useState<DesignationInpType>(INITIAL_FORM_DATA);
 
@@ -70,6 +70,9 @@ const DesignationForm = () => {
                 return;
             }
             dispatch(addDesignation(formData));
+            if (flag) {
+                navigate("/employee/add");
+            };
 
             // Reset formData
             setFormData(INITIAL_FORM_DATA);
@@ -118,7 +121,7 @@ const DesignationForm = () => {
                     {!isEdit ? (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Add Designation
+                                Designation
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
@@ -174,7 +177,7 @@ const DesignationForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Department
+                                Designation
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>

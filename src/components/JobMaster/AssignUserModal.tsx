@@ -1,4 +1,4 @@
-import type { EmployeeArrType } from "@/@types/employee";
+import type { ClientArrType } from "@/@types/client";
 import type { JobMasterType } from "@/@types/jobMaster";
 import { getAllEmployees } from "@/redux/Employees/employeeSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
@@ -18,7 +18,7 @@ const AssignUserModal = ({
 }) => {
     const [selectedUser, setSelectedUser] = useState<string>("");
     const dispatch = useAppDispatch();
-    const { employees } = useAppSelector(state => state.employee);
+    const { clients } = useAppSelector(state => state.client);
     const [selectedUserName, setSelectedUserName] = useState<string>("");
 
     useEffect(() => {
@@ -27,10 +27,10 @@ const AssignUserModal = ({
 
     useEffect(() => {
         if (selectedUser) {
-            const user: EmployeeArrType | undefined | any = employees.find((emp: EmployeeArrType) => emp.EmplCode === selectedUser);
-            setSelectedUserName(user ? user.EmplName : "");
+            const user: ClientArrType | undefined | any = clients.find((cli: ClientArrType) => cli.ClientCode === selectedUser);
+            setSelectedUserName(user ? user.ClientName : "");
         }
-    }, [selectedUser, employees]);
+    }, [selectedUser, clients]);
 
     const handleAssign = () => {
         if (selectedUser && jobMaster?.JobNo != null) {
@@ -39,6 +39,12 @@ const AssignUserModal = ({
             onClose();
         }
     };
+
+    useEffect(() => {
+        if (jobMaster && jobMaster?.ClientCode) {
+            setSelectedUser(jobMaster?.ClientCode);
+        }
+    }, [jobMaster]);
 
     const handleClose = () => {
         setSelectedUser("");
@@ -87,12 +93,12 @@ const AssignUserModal = ({
                                 onChange={(e) => setSelectedUser(e.target.value)}
                             >
                                 <option value="">Choose a user...</option>
-                                {employees?.length > 0 ? employees.map((user: EmployeeArrType) => (
-                                    <option key={user.EmplCode} value={user.EmplCode}>
-                                        {user.EmplName} ({user.Email})
+                                {clients?.length > 0 ? clients.map((user: ClientArrType) => (
+                                    <option key={user.ClientCode} value={user.ClientCode}>
+                                        {user?.ClientName}
                                     </option>
                                 )) : (
-                                    <option value="" disabled={true}>No users available ...</option>
+                                    <option value="" disabled={true}>No clients available ...</option>
                                 )}
                             </select>
                         </div>

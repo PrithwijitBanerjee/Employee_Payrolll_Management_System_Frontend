@@ -8,6 +8,7 @@ const DepartmentRoute: React.FC = () => {
         <>
             <Routes>
                 <Route path="/add" element={<DepartmentForm />} />
+                <Route path="/add/:flag" element={<DepartmentForm />} />
                 <Route path="/view" element={<Departments />} />
                 <Route path="/update/:id/:isEdit" element={<DepartmentForm />} />
             </Routes>

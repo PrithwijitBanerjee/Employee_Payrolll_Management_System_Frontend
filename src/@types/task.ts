@@ -1,9 +1,13 @@
 export type TASKINPTYPE = {
     JobNo: string;
+    JobTo: string;
     StartTime: string;
     EndTime: string;
     Particulars: string;
     TaskStatus: string;
+    Remarks: string;
+    ClientCode?: string;
+    ProjectCode?: string;
 };
 
 export type TaskArrType = {
@@ -18,6 +22,8 @@ export type TaskArrType = {
     DurationMin: string | number;
     Particulars: string;
     TaskStatus: string;
+    JobTo: string;
+    Remarks: string;
     client?: {
         ClientName?: string,
     };
@@ -51,14 +57,16 @@ export type UpdateTaskDetailType = {
     TaskId?: string | number,
     TaskDate?: string;
     EmplCode?: string;
-    JobNo: string;
+    JobNo?: string;
     ClientCode?: string;
     ProjectCode?: string;
-    StartTime: string;
-    EndTime: string;
+    StartTime?: string;
+    EndTime?: string;
     DurationMin?: string | number;
-    Particulars: string;
-    TaskStatus: string;
+    Particulars?: string;
+    TaskStatus?: string;
+    JobTo?: string;
+    Remarks?: string;
     client?: {
         ClientName?: string,
     };

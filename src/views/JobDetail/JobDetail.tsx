@@ -1,4 +1,3 @@
-import type { ClientArrType } from "@/@types/client";
 import type { JobDetailType } from "@/@types/jobDetails";
 import type { JobMasterType } from "@/@types/jobMaster";
 import type { ProjectArrType } from "@/@types/project";
@@ -18,7 +17,6 @@ import { useEffect, useState } from "react";
 const INITIAL_FORM_ROW: JobDetailType = {
     id: 1,
     JobNo: "",
-    ClientCode: "",
     JobMasterNo: "",
     ProjectCode: "",
     Particulars: "",
@@ -41,7 +39,7 @@ const JobDetail = () => {
     const dispatch = useAppDispatch();
     const [formRows, setFormRows] = useState<JobDetailType[]>([INITIAL_FORM_ROW]);
     const [activeTab, setActiveTab] = useState("jobMaster");
-    const { clients } = useAppSelector(state => state.client);
+    // const { clients } = useAppSelector(state => state.client);
     const { projects } = useAppSelector(state => state.project) as { projects: ProjectArrType[] };
     const { projectHelps } = useAppSelector(state => state?.projectHelp);
     const { jobDetails, status: jobSummaryStatus } = useAppSelector(state => state.jobDetail);
@@ -59,6 +57,9 @@ const JobDetail = () => {
         inProgressJobs: 0,
     });
 
+    // State to track the master project code
+    const [masterProjectCode, setMasterProjectCode] = useState<string>("");
+
     useEffect(() => {
         if (jobMasters) {
             const totalJobs = jobMasters.length;
@@ -75,9 +76,9 @@ const JobDetail = () => {
     }, [jobMasters]);
 
     useEffect(() => {
-       if(projects?.length) {
+        if (projects?.length) {
             setActiveProjects(projects?.filter((item: ProjectArrType) => item?.status?.data === "Active") ?? []);
-       }
+        }
     }, [projects]);
 
     // State for delete confirmation modal
@@ -96,7 +97,7 @@ const JobDetail = () => {
         setAssignModalOpen(true);
     };
 
-    const handleAssignUser = (jobMasterCode: string | any, JobTo: string | any) => {
+    const handleAssignUser = (jobMasterCode: string | any, ClientCode: string | any) => {
         // Encode the jobMasterCode to the required format
         const encodedJobMasterCode = encodeURIComponent(jobMasterCode);
 
@@ -106,7 +107,7 @@ const JobDetail = () => {
 
         dispatch(updateJobMaster({
             id: encodedJobMasterCode, // Use the encoded value here
-            JobTo,
+            ClientCode,
         })).then(() => {
             // Refresh the job masters list after successful assignment
             dispatch(getAllJobMasters());
@@ -170,29 +171,108 @@ const JobDetail = () => {
 
         if (selectedProject?.SGSTRate) {
             // Update the form with project's GST rates
-            handleInputChange(id, "SGSTRate", parseFloat(selectedProject.SGSTRate) || 0);
-            handleInputChange(id, "CGSTRate", parseFloat(selectedProject.CGSTRate) || 0);
-            handleInputChange(id, "IGSTRate", parseFloat(selectedProject.IGSTRate) || 0);
+            setFormRows(prev => prev.map(row => {
+                if (String(row.id) === String(id)) {
+                    return {
+                        ...row,
+                        SGSTRate: parseFloat(selectedProject.SGSTRate) || 0,
+                        CGSTRate: parseFloat(selectedProject.CGSTRate) || 0,
+                        IGSTRate: parseFloat(selectedProject.IGSTRate) || 0
+                    };
+                }
+                return row;
+            }));
         }
     };
-
     const addFormRow = () => {
-        setFormRows(prev => [...prev, { ...INITIAL_FORM_ROW, id: Date.now() }]);
+        const newRow = {
+            ...INITIAL_FORM_ROW,
+            id: Date.now(),
+            // Auto-populate ProjectCode from master if available
+            ProjectCode: masterProjectCode || ""
+        };
+
+        setFormRows(prev => {
+            const updatedRows = [...prev, newRow];
+
+            // If master project code exists and we have projects data, auto-populate GST rates for the new row
+            if (masterProjectCode && projects?.length > 0) {
+                const selectedProject: ProjectArrType | undefined = projects.find((project: ProjectArrType) =>
+                    (project as ProjectArrType).ProjectCode === masterProjectCode
+                );
+
+                if (selectedProject?.SGSTRate) {
+                    const lastRowIndex = updatedRows.length - 1;
+                    updatedRows[lastRowIndex] = {
+                        ...updatedRows[lastRowIndex],
+                        SGSTRate: parseFloat(selectedProject.SGSTRate) || 0,
+                        CGSTRate: parseFloat(selectedProject.CGSTRate) || 0,
+                        IGSTRate: parseFloat(selectedProject.IGSTRate) || 0
+                    };
+                }
+            }
+
+            return updatedRows;
+        });
     };
 
     const removeFormRow = (id: string | number) => {
         if (formRows.length > 1) {
             setFormRows(prev => prev.filter(row => String(row.id) !== String(id)));
+
+            // If removing the first row and there are other rows, update master project code
+            if (String(formRows[0].id) === String(id) && formRows.length > 1) {
+                setMasterProjectCode(formRows[1].ProjectCode || "");
+            }
         }
     };
 
-    // Enhanced handleInputChange to include project change handling
+    // Enhanced handleInputChange to include project change handling and master project code tracking
     const handleInputChange = (id: string | number, field: keyof JobDetailType, value: string | number) => {
         setFormRows(prev => prev.map(row => {
             if (String(row.id) === String(id)) {
                 const updatedRow = { ...row, [field]: value };
 
-                // If ProjectCode is being changed, trigger GST rate update
+                // If ProjectCode is being changed in the first row, update master project code and propagate to all rows
+                if (field === "ProjectCode" && String(row.id) === String(formRows[0].id)) {
+                    setMasterProjectCode(value as string);
+
+                    // Auto-populate ProjectCode and GST rates for all other rows
+                    if (formRows.length > 1 && value) {
+                        setTimeout(() => {
+                            setFormRows(currentRows => {
+                                const selectedProject: ProjectArrType | undefined = projects.find((project: ProjectArrType) =>
+                                    (project as ProjectArrType).ProjectCode === value
+                                );
+
+                                return currentRows.map((r, index) => {
+                                    if (index === 0) {
+                                        return updatedRow;
+                                    } else {
+                                        const updatedSubRow = {
+                                            ...r,
+                                            ProjectCode: value as string
+                                        };
+
+                                        // Also update GST rates for subsequent rows
+                                        if (selectedProject?.SGSTRate) {
+                                            return {
+                                                ...updatedSubRow,
+                                                SGSTRate: parseFloat(selectedProject.SGSTRate) || 0,
+                                                CGSTRate: parseFloat(selectedProject.CGSTRate) || 0,
+                                                IGSTRate: parseFloat(selectedProject.IGSTRate) || 0
+                                            };
+                                        }
+
+                                        return updatedSubRow;
+                                    }
+                                });
+                            });
+                        }, 0);
+                    }
+                }
+
+                // If ProjectCode is being changed in any row, trigger GST rate update
                 if (field === "ProjectCode") {
                     // Use setTimeout to ensure state is updated before calculating GST
                     setTimeout(() => {
@@ -273,6 +353,13 @@ const JobDetail = () => {
         }
     }, [projectHelps]);
 
+    // Reset master project code when form is reset or tab changes
+    useEffect(() => {
+        if (formRows.length === 1 && !formRows[0].ProjectCode) {
+            setMasterProjectCode("");
+        }
+    }, [formRows]);
+
     // console.log("form Data: >>>>>> ", formRows);
 
     return (
@@ -321,6 +408,7 @@ const JobDetail = () => {
                                     setActiveTab("jobMaster");
                                     setIsEdit(false);
                                     setFormRows([INITIAL_FORM_ROW]);
+                                    setMasterProjectCode("");
                                 }}
                             >
                                 <i className="fa-solid fa-table me-2"></i>
@@ -334,6 +422,7 @@ const JobDetail = () => {
                                     setActiveTab("jobDetail");
                                     setIsEdit(false);
                                     setFormRows([INITIAL_FORM_ROW]);
+                                    setMasterProjectCode("");
                                 }}
                             >
                                 <i className="fa-solid fa-pen-to-square me-2"></i>
@@ -347,6 +436,7 @@ const JobDetail = () => {
                                     setActiveTab("jobSummary");
                                     setIsEdit(false);
                                     setFormRows([INITIAL_FORM_ROW]);
+                                    setMasterProjectCode("");
                                 }}
                             >
                                 <i className="fa-solid fa-list-check me-2"></i>
@@ -378,8 +468,7 @@ const JobDetail = () => {
                                             <tr>
                                                 <th className="ps-4">Job No</th>
                                                 <th>Job Date</th>
-                                                <th>Job From</th>
-                                                <th>Job To</th>
+                                                <th>Client Code</th>
                                                 <th>Basic Amount</th>
                                                 <th>Disc Amount</th>
                                                 <th>Gross Amount</th>
@@ -396,18 +485,16 @@ const JobDetail = () => {
                                                             <span className="badge bg-primary">{jobMaster?.JobNo || "-"}</span>
                                                         </td>
                                                         <td>{jobMaster?.JobDate || "-"}</td>
-                                                        <td>{jobMaster?.fromUser?.EmplName || "-"}</td>
-                                                        <td>
-                                                            <div className="d-flex align-items-center justify-content-between">
-                                                                <span>{jobMaster?.toUser?.EmplName || "Not Assigned"}</span>
-                                                                <button
-                                                                    className="btn btn-sm btn-outline-primary ms-2"
-                                                                    onClick={() => handleAssignClick(jobMaster)}
-                                                                    title="Assign User"
-                                                                >
-                                                                    <i className="fa-solid fa-user-plus"></i>
-                                                                </button>
-                                                            </div>
+                                                        <td><div className="d-flex align-items-center justify-content-between">
+                                                            <span>{jobMaster?.ClientCode || "Not Assigned"}</span>
+                                                            <button
+                                                                className="btn btn-sm btn-outline-primary ms-2"
+                                                                onClick={() => handleAssignClick(jobMaster)}
+                                                                title="Assign User"
+                                                            >
+                                                                <i className="fa-solid fa-user-plus"></i>
+                                                            </button>
+                                                        </div>
                                                         </td>
                                                         <td>{Number(jobMaster?.BasicAmount).toFixed(2) || "0.00"}</td>
                                                         <td>{Number(jobMaster?.DiscAmount).toFixed(2) || "0.00"}</td>
@@ -503,60 +590,38 @@ const JobDetail = () => {
                                                     <form>
                                                         {/* First Row - Basic Information */}
                                                         <div className="row g-4 mb-4">
-                                                            {/* Client Code Dropdown */}
-                                                            <div className="col-md-2">
-                                                                <label htmlFor={`clientCode-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-users text-primary me-1"></i>
-                                                                    Client Code
-                                                                </label>
-                                                                <select
-                                                                    className="form-select border-2 shadow-sm"
-                                                                    id={`clientCode-${row.id}`}
-                                                                    value={row.ClientCode}
-                                                                    onChange={(e) => handleInputChange(row.id, 'ClientCode', e.target.value)}
-                                                                >
-                                                                    <option value="">Select Client</option>
-                                                                    {clients?.length > 0 ? clients.map((client: ClientArrType) => (
-                                                                        <option key={client.ClientCode} value={client.ClientCode}>
-                                                                            {client.ClientName}
-                                                                        </option>
-                                                                    )) : <option disabled={true} value="">No Clients Available</option>}
-                                                                </select>
-                                                            </div>
-
                                                             {/* Project Code Dropdown */}
-                                                            <div className="col-md-2">
+                                                            <div className="col-md-4">
                                                                 <label htmlFor={`projectCode-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-diagram-project text-success me-1"></i>
+                                                                    <i className="fa-solid fa-diagram-project text-success me-1 mx-2"></i>
                                                                     Project Code
                                                                 </label>
                                                                 <select
-                                                                    className="form-select border-2 shadow-sm"
+                                                                    className={`form-select border-2 shadow-sm w-100 h-50 ${index > 0 ? 'bg-light' : ''}`}
                                                                     id={`projectCode-${row.id}`}
                                                                     value={row.ProjectCode}
                                                                     onChange={(e) => handleInputChange(row.id, 'ProjectCode', e.target.value)}
+                                                                    disabled={index > 0 && masterProjectCode !== ""}
                                                                 >
                                                                     <option value="">Select Project</option>
-                                                                    {/* {projects?.length > 0 ? projects?.map((project: ProjectArrType) => (
-                                                                        <option key={project.ProjectCode} value={project.ProjectCode}>
-                                                                            {project.ProjectName}
-                                                                        </option>
-                                                                    )) : <option disabled={true} value="">No Projects Available</option>} */}
-                                                                     {activeProjects?.length > 0 ? activeProjects?.map((project: ProjectArrType) => (
+                                                                    {activeProjects?.length > 0 ? activeProjects?.map((project: ProjectArrType) => (
                                                                         <option key={project.ProjectCode} value={project.ProjectCode}>
                                                                             {project.ProjectName}
                                                                         </option>
                                                                     )) : <option disabled={true} value="">No Projects Available</option>}
                                                                 </select>
+                                                                {index > 0 && masterProjectCode !== "" && (
+                                                                    <small className="text-info mt-1 d-block">
+                                                                        <i className="fa-solid fa-info-circle me-1"></i>
+                                                                        Project code inherited from first entry
+                                                                    </small>
+                                                                )}
                                                             </div>
 
-                                                            {/* Empty column for gap */}
-                                                            <div className="col-md-1"></div>
-
                                                             {/* Expected Delivery Date */}
-                                                            <div className="col-md-2">
+                                                            <div className="col-md-4">
                                                                 <label htmlFor={`expDelvDate-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-calendar text-warning me-1"></i>
+                                                                    <i className="fa-solid fa-calendar text-warning me-1 mx-2"></i>
                                                                     Exp. Delivery Date
                                                                 </label>
                                                                 <input
@@ -569,13 +634,13 @@ const JobDetail = () => {
                                                             </div>
 
                                                             {/* Job Status Dropdown */}
-                                                            <div className="col-md-2">
+                                                            <div className="col-md-4">
                                                                 <label htmlFor={`jobStatus-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-circle-check text-info me-1"></i>
+                                                                    <i className="fa-solid fa-circle-check text-info me-1 mx-2"></i>
                                                                     Job Status
                                                                 </label>
                                                                 <select
-                                                                    className="form-select border-2 shadow-sm"
+                                                                    className="form-select border-2 shadow-sm w-100 h-50"
                                                                     id={`jobStatus-${row.id}`}
                                                                     value={row.JobStatus}
                                                                     onChange={(e) => handleInputChange(row.id, 'JobStatus', e.target.value)}
@@ -587,12 +652,13 @@ const JobDetail = () => {
                                                             </div>
                                                         </div>
 
+                                                        {/* Rest of your form remains the same */}
                                                         {/* Second Row - Particulars and Attachment */}
                                                         <div className="row g-4 mb-4">
                                                             {/* Particulars Textarea */}
                                                             <div className="col-md-6">
                                                                 <label htmlFor={`particulars-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-list text-primary me-1"></i>
+                                                                    <i className="fa-solid fa-list text-primary me-1 mx-2"></i>
                                                                     Particulars
                                                                 </label>
                                                                 <textarea
@@ -623,7 +689,7 @@ const JobDetail = () => {
                                                                     </button>
                                                                 </div>
                                                                 <small className="text-muted mt-1 d-block">
-                                                                    <i className="fa-solid fa-info-circle me-1"></i>
+                                                                    <i className="fa-solid fa-info-circle me-1 mx-2"></i>
                                                                     Upload PDF file (Max: 10MB)
                                                                 </small>
                                                             </div>
@@ -634,11 +700,11 @@ const JobDetail = () => {
                                                             {/* Basic Amount */}
                                                             <div className="col-md-2">
                                                                 <label htmlFor={`basicAmount-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-dollar-sign text-success me-1"></i>
+                                                                    <i className="fa-solid fa-indian-rupee-sign text-success me-1 mx-2"></i>
                                                                     Basic Amount
                                                                 </label>
                                                                 <div className="input-group">
-                                                                    <span className="input-group-text bg-light border-2">$</span>
+                                                                    <span className="input-group-text bg-light border-2">INR</span>
                                                                     <input
                                                                         type="number"
                                                                         className="form-control border-2 shadow-sm"
@@ -655,7 +721,7 @@ const JobDetail = () => {
                                                             {/* Discount Rate */}
                                                             <div className="col-md-2">
                                                                 <label htmlFor={`discRate-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-percent text-warning me-1"></i>
+                                                                    <i className="fa-solid fa-percent text-warning me-1 mx-2"></i>
                                                                     Discount Rate
                                                                 </label>
                                                                 <div className="input-group">
@@ -676,7 +742,7 @@ const JobDetail = () => {
                                                             {/* Discount Amount */}
                                                             <div className="col-md-2">
                                                                 <label htmlFor={`discAmount-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-tag text-info me-1"></i>
+                                                                    <i className="fa-solid fa-tag text-info me-1 mx-2"></i>
                                                                     Discount Amount
                                                                 </label>
                                                                 <div className="input-group">
@@ -695,7 +761,7 @@ const JobDetail = () => {
                                                                 </div>
                                                                 {Number(row.DiscRate) > 0 && (
                                                                     <small className="text-success mt-1 d-block">
-                                                                        <i className="fa-solid fa-calculator me-1"></i>
+                                                                        <i className="fa-solid fa-calculator me-1 mx-2"></i>
                                                                         Calculated automatically from discount rate
                                                                     </small>
                                                                 )}
@@ -710,7 +776,7 @@ const JobDetail = () => {
                                                             {/* Gross Amount */}
                                                             <div className="col-md-2">
                                                                 <label htmlFor={`grossAmount-${row.id}`} className="form-label fw-semibold text-dark">
-                                                                    <i className="fa-solid fa-calculator text-primary me-1"></i>
+                                                                    <i className="fa-solid fa-calculator text-primary me-1 mx-2"></i>
                                                                     Gross Amount
                                                                 </label>
                                                                 <div className="input-group">
@@ -861,7 +927,7 @@ const JobDetail = () => {
                                                                     Net Amount
                                                                 </label>
                                                                 <div className="input-group">
-                                                                    <span className="input-group-text bg-primary text-white border-2 border-primary">$</span>
+                                                                    <span className="input-group-text bg-primary text-white border-2 border-primary">INR</span>
                                                                     <input
                                                                         type="number"
                                                                         className="form-control border-2 border-primary bg-light fw-bold text-primary"
@@ -885,7 +951,10 @@ const JobDetail = () => {
                                 {/* Final Save Button - Outside the scrollable area */}
                                 <div className="border-top bg-light" style={{ padding: "1.5rem" }}>
                                     <div className="text-end">
-                                        <button type="button" className="btn btn-outline-secondary me-2 rounded-pill px-4" onClick={(() => setFormRows([INITIAL_FORM_ROW]))}>
+                                        <button type="button" className="btn btn-outline-secondary me-2 rounded-pill px-4" onClick={(() => {
+                                            setFormRows([INITIAL_FORM_ROW]);
+                                            setMasterProjectCode("");
+                                        })}>
                                             <i className="fa-solid fa-rotate me-1"></i> Reset All
                                         </button>
                                         <button
@@ -896,7 +965,6 @@ const JobDetail = () => {
                                                 let apiData = [];
                                                 if (!isEdit) {
                                                     apiData = formRows.map(row => ({
-                                                        ClientCode: row.ClientCode,
                                                         JobMasterNo: row.JobMasterNo || "",
                                                         ProjectCode: row.ProjectCode,
                                                         Particulars: row.Particulars,
@@ -909,7 +977,6 @@ const JobDetail = () => {
                                                 } else {
                                                     apiData = formRows.map(row => ({
                                                         JobNo: row.JobNo,
-                                                        ClientCode: row.ClientCode,
                                                         JobMasterNo: row.JobMasterNo || "",
                                                         ProjectCode: row.ProjectCode,
                                                         Particulars: row.Particulars,
@@ -922,6 +989,7 @@ const JobDetail = () => {
                                                 }
                                                 dispatch(addJobDetail(apiData)).then(() => {
                                                     setFormRows([INITIAL_FORM_ROW]); // Reset form after successful submission
+                                                    setMasterProjectCode("");
                                                 });
                                                 if (isEdit) {
                                                     setIsEdit(false);
@@ -941,6 +1009,7 @@ const JobDetail = () => {
                 </div>
             )}
 
+            {/* Rest of your component remains the same */}
             {/* Job Detail Table */}
             {activeTab === "jobSummary" && (
                 <div className="row">
@@ -1027,7 +1096,7 @@ const JobDetail = () => {
                                                         </div>
                                                     </td>
                                                     <td>{item?.status?.data || "-"}</td>
-                                                    <td>${item?.BasicAmount || "-"}</td>
+                                                    <td>{item?.BasicAmount || "-"}</td>
                                                     <td>{item?.DiscRate || 0}</td>
                                                     <td>{item?.DiscAmount || 0}</td>
                                                     <td>{item?.GrossAmount || 0}</td>
@@ -1038,14 +1107,18 @@ const JobDetail = () => {
                                                     <td>{item?.IGSTRate || 0}</td>
                                                     <td>{item?.IGSTAmount || 0}</td>
                                                     <td>
-                                                        <strong>${item?.NetAmount || 0}</strong>
+                                                        <strong>{item?.NetAmount || 0}</strong>
                                                     </td>
                                                     <td className="pe-4">
                                                         <button className="btn btn-sm btn-outline-primary me-1" onClick={(() => {
                                                             setIsEdit(true);
-                                                            const filteredJobsByMasterCode = jobDetails?.filter((e: JobDetailType) => e?.JobMasterNo === item?.JobMasterNo) ? jobDetails?.filter((e: JobDetailType) => e?.JobMasterNo === item?.JobMasterNo) : [];
+                                                            const filteredJobsByMasterCode: JobDetailType[] = jobDetails?.filter((e: JobDetailType) => e?.JobMasterNo === item?.JobMasterNo) ? jobDetails?.filter((e: JobDetailType) => e?.JobMasterNo === item?.JobMasterNo) : [];
                                                             setFormRows(filteredJobsByMasterCode);
                                                             setActiveTab("jobDetail");
+                                                            // Set master project code from the first row when editing
+                                                            if (filteredJobsByMasterCode.length > 0) {
+                                                                setMasterProjectCode(filteredJobsByMasterCode[0].ProjectCode || "");
+                                                            }
                                                         })}>
                                                             <i className="fa-solid fa-pen me-1"></i>
                                                         </button>

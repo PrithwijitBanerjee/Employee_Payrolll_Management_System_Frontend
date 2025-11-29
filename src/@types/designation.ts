@@ -8,6 +8,7 @@ export type DesignationSlice = {
     error: any,
     designations: [],
     designation: object | null,
+    desgCode?: string | any,
 };
 
 export type DesignationRespType = {

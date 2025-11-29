@@ -8,6 +8,7 @@ const DesignationRoute: React.FC = () => {
         <>
             <Routes>
                 <Route path="/add" element={<DesignationForm />} />
+                <Route path="/add/:flag" element={<DesignationForm />} />
                 <Route path="/view" element={<Designations />} />
                 <Route path="/update/:id/:isEdit" element={<DesignationForm />} />
             </Routes>

@@ -130,7 +130,7 @@ const ClientForm = () => {
                     {!isEdit ? (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Add Client
+                                Client
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
@@ -186,7 +186,7 @@ const ClientForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Client
+                                Client
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>

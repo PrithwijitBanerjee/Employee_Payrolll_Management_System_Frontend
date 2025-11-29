@@ -2,7 +2,6 @@ export type JobDetailType = {
     id: string | number,
     JobMasterNo: string | number,
     JobNo?: number | string,
-    ClientCode: string,
     ProjectCode: string,
     Particulars: string,
     ExpDelvDate: string,
@@ -18,6 +17,7 @@ export type JobDetailType = {
     IGSTRate: number | string,
     IGSTAmount: number | string,
     NetAmount: number | string,
+    ClientCode?: string,
     status?: {
         data?: string,
     } | null,
@@ -47,7 +47,6 @@ export type UpdateJobDetailType = {
     id: string,
     JobMasterNo: string,
     JobNo?: number | string,
-    ClientCode: string,
     ProjectCode: string,
     Particulars: string,
     ExpDelvDate: string,
@@ -66,7 +65,6 @@ export type UpdateJobDetailType = {
 };
 
 export type JobDetailInpType = {
-    ClientCode: string,
     ProjectCode: string,
     Particulars: string,
     ExpDelvDate: string,

@@ -67,12 +67,23 @@ const Endpoints = {
     getAllJobMasters: "admin/get-jobmasts",
     updateJobMaster: "admin/update-jobmast",
 
-    /** ... task detail related endpoints ... **/
+    /** ... create task detail related endpoints ... **/
     createTask: "admin/create-task",
     getAllTasks: "admin/get-tasks",
     getTaskByCode: "admin/get-task",
     updateTask: "admin/update-task",
     deleteTask: "admin/delete-task",
+
+    /** ... alloted task related endpoints ... **/
+    getAllotedTasks: "admin/tasks/job-to",
+
+    /** ... manage task related endpoints ... **/
+    getManagedTasks: "admin/tasks/job-from",
+    addManageTask: "admin/manage-task",
+
+    /** ... MIS report generate ... **/
+    reportAllotedToMe: "admin/mis/me",
+    reportAllotedToOthers: "admin/mis/others",
 
 };
 

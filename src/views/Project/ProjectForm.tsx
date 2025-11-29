@@ -155,7 +155,7 @@ const ProjectForm = () => {
                     {!isEdit ? (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Add Project
+                                Project
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
@@ -264,7 +264,7 @@ const ProjectForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Project 
+                                Project 
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>

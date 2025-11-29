@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import Loader from "@/components/commons/Loader";
 import { STATUES } from "@/utils/Status";
-import { convertDate } from "@/utils";
+// import { convertDate } from "@/utils";
 import { deleteClient, getAllClients } from "@/redux/Clients/clientSlice";
 import type { ClientArrType } from "@/@types/client";
 
@@ -41,20 +41,20 @@ const Clients: React.FC = () => {
             render: (row: ClientArrType) => row?.status?.data || "-",
             sortable: true,
         },
-        {
-            key: "createdAt",
-            name: "Created At",
-            selector: (row: ClientArrType) => convertDate(row?.createdAt as string) || "-",
-            render: (row: ClientArrType) => convertDate(row.createdAt as string) || "-",
-            sortable: true,
-        },
-        {
-            key: "updatedAt",
-            name: "Updated At",
-            selector: (row: ClientArrType) => convertDate(row?.updatedAt as string) || "-",
-            render: (row: ClientArrType) => convertDate(row.updatedAt as string) || "-",
-            sortable: true,
-        },
+        // {
+        //     key: "createdAt",
+        //     name: "Created At",
+        //     selector: (row: ClientArrType) => convertDate(row?.createdAt as string) || "-",
+        //     render: (row: ClientArrType) => convertDate(row.createdAt as string) || "-",
+        //     sortable: true,
+        // },
+        // {
+        //     key: "updatedAt",
+        //     name: "Updated At",
+        //     selector: (row: ClientArrType) => convertDate(row?.updatedAt as string) || "-",
+        //     render: (row: ClientArrType) => convertDate(row.updatedAt as string) || "-",
+        //     sortable: true,
+        // },
     ];
 
     const handleEdit = (row: ClientArrType): void => {

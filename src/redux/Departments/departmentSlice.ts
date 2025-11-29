@@ -10,6 +10,7 @@ const initialState: DepartmentSlice = {
     error: null,
     department: null,
     departments: [],
+    deptCode: null,
 };
 
 export const getAllDepartments = createAsyncThunk<DepartmentRespType, void>("user/department/fetch/Job", async (_, { rejectWithValue }) => {
@@ -65,7 +66,11 @@ export const deleteDepartment = createAsyncThunk<DepartmentRespType, string>("us
 const departmentSlice = createSlice({
     name: "department",
     initialState,
-    reducers: {}, // Required property
+    reducers: {
+        add_department_employee: (state, action: PayloadAction<string>) => {
+            state.deptCode = action.payload;
+        },
+    }, // Required property
     extraReducers: builder => {
         builder
             .addCase(getAllDepartments.pending, state => {
@@ -124,9 +129,11 @@ const departmentSlice = createSlice({
                 if (payload.status && typeof payload.status === "boolean") {
                     state.status = STATUES.IDLE;
                     state.error = null;
+                    state.deptCode = payload?.data?.DeptCode;
                     toast.success(payload?.message);
                 } else {
                     state.status = STATUES.ERROR;
+                    state.deptCode = null;
                     state.error = payload.message || null;
                     toast.error(payload.message || "Something Went Wrong!!!");
                 }
@@ -180,4 +187,5 @@ const departmentSlice = createSlice({
     }
 });
 
+export const {add_department_employee} = departmentSlice.actions;
 export default departmentSlice;

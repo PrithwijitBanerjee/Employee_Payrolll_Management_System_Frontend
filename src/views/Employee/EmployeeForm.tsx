@@ -39,10 +39,26 @@ const EmployeeForm = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const { projectHelps } = useAppSelector(state => state?.projectHelp);
-    const { status: departmentStatus, departments } = useAppSelector(state => state?.department);
-    const { status: designationStatus, designations } = useAppSelector(state => state?.designation);
+    const { status: departmentStatus, departments, deptCode } = useAppSelector(state => state?.department);
+    const { status: designationStatus, designations, desgCode } = useAppSelector(state => state?.designation);
     const { status, employee } = useAppSelector(state => state?.employee);
     const [employeeTypes, setEmployeeTypes] = useState<ProjectHelpArrType[] | []>([]);
+
+    useEffect(() => {
+        if (deptCode) {
+            setFormData(prevData => ({
+                ...prevData,
+                DeptCode: deptCode,
+            }));
+        }
+        if (desgCode) {
+            setFormData(prevData => ({
+                ...prevData,
+                DesgCode: desgCode,
+            }));
+        }
+    }, [deptCode, desgCode]);
+
 
     const fetchAllEmployeeTypes = async () => {
         try {
@@ -249,7 +265,7 @@ const EmployeeForm = () => {
                     {!isEdit ? (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Add Employee
+                                Employee
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
@@ -303,44 +319,78 @@ const EmployeeForm = () => {
                                         </select>
                                     </div>
 
-                                    {/*  Department Code */}
+                                    {/*  Department Code with Plus Icon */}
                                     <div className="form-group mb-3">
                                         <label htmlFor="category">Department</label>
-                                        <select
-                                            id="DeptCode"
-                                            name="DeptCode"
-                                            className="form-control"
-                                            value={formData.DeptCode}
-                                            onChange={handleInputChange}
-                                            required
-                                        >
-                                            <option value={""} disabled={true}>select department</option>
-                                            {
-                                                departments?.length > 0 ? departments?.map((item: DepartmentArrType) => (
-                                                    <option key={item.DeptCode} value={item.DeptCode}>{item.DeptName}</option>
-                                                )) : (<option value={""} disabled={true}>No data found ...</option>)
-                                            }
-                                        </select>
+                                        <div className="d-flex align-items-center" style={{ gap: "10px" }}>
+                                            <select
+                                                id="DeptCode"
+                                                name="DeptCode"
+                                                className="form-control flex-grow-1"
+                                                value={formData.DeptCode}
+                                                onChange={handleInputChange}
+                                                required
+                                            >
+                                                <option value={""} disabled={true}>select department</option>
+                                                {
+                                                    departments?.length > 0 ? departments?.map((item: DepartmentArrType) => (
+                                                        <option key={item.DeptCode} value={item.DeptCode}>{item.DeptName}</option>
+                                                    )) : (<option value={""} disabled={true}>No data found ...</option>)
+                                                }
+                                            </select>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-primary btn-sm"
+                                                onClick={(() => navigate("/department/add/true"))}
+                                                style={{
+                                                    width: "40px",
+                                                    height: "38px",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center"
+                                                }}
+                                                title="Add New Department"
+                                            >
+                                                <i className="fas fa-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    {/*  Designation Code */}
+                                    {/*  Designation Code with Plus Icon */}
                                     <div className="form-group mb-3">
                                         <label htmlFor="category">Designation</label>
-                                        <select
-                                            id="DesgCode"
-                                            name="DesgCode"
-                                            className="form-control"
-                                            value={formData.DesgCode}
-                                            onChange={handleInputChange}
-                                            required
-                                        >
-                                            <option value={""} disabled={true}>select designation</option>
-                                            {
-                                                designations?.length > 0 ? designations?.map((item: DesignationArrType) => (
-                                                    <option key={item.DesgCode} value={item.DesgCode}>{item.DesgName}</option>
-                                                )) : (<option value={""} disabled={true}>No data found ...</option>)
-                                            }
-                                        </select>
+                                        <div className="d-flex align-items-center" style={{ gap: "10px" }}>
+                                            <select
+                                                id="DesgCode"
+                                                name="DesgCode"
+                                                className="form-control flex-grow-1"
+                                                value={formData.DesgCode}
+                                                onChange={handleInputChange}
+                                                required
+                                            >
+                                                <option value={""} disabled={true}>select designation</option>
+                                                {
+                                                    designations?.length > 0 ? designations?.map((item: DesignationArrType) => (
+                                                        <option key={item.DesgCode} value={item.DesgCode}>{item.DesgName}</option>
+                                                    )) : (<option value={""} disabled={true}>No data found ...</option>)
+                                                }
+                                            </select>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-primary btn-sm"
+                                                onClick={(() => navigate("/designation/add/true"))}
+                                                style={{
+                                                    width: "40px",
+                                                    height: "38px",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center"
+                                                }}
+                                                title="Add New Designation"
+                                            >
+                                                <i className="fas fa-plus"></i>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {/*  DOB */}
@@ -470,7 +520,7 @@ const EmployeeForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Employee
+                                Employee
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>

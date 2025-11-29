@@ -1,8 +1,6 @@
 export type JobMasterType = {
     JobNo?: number | string,
     JobDate: string,
-    JobFrom: string,
-    JobTo: string,
     BasicAmount: number | string,
     DiscAmount: number | string,
     TaxAmount: number | string,
@@ -17,7 +15,8 @@ export type JobMasterType = {
     GrossAmount: number | string,
     status?: {
         data?: string,
-    }
+    },
+    ClientCode: string,
 };
 
 export type JobMasterSlice = {

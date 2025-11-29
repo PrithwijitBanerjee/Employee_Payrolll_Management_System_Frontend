@@ -6,10 +6,11 @@ import Loader from '@/components/commons/Loader';
 import { getProjectHelpByTag } from '@/redux/ProjectHelp/projectHelpSlice';
 import type { ProjectHelpArrType } from '@/@types/projectHelp';
 import type { JobDetailType } from '@/@types/jobDetails';
-import { addTaskDetail, deleteTaskDetail, getAllTaskDetails, getTaskDetailById, updateTaskDetail } from '@/redux/TaskDetail/taskDetailSlice';
+import { deleteTaskDetail, getAllAllotedTaskDetails, getAllTaskDetails, getTaskDetailById, updateTaskDetail } from '@/redux/TaskDetail/taskDetailSlice';
 import { getAllJobDetails } from '@/redux/JobDetail/jobDetailSlice';
 import DeleteModal from '@/components/modals/DeleteModal';
 import { getAllEmployees } from '@/redux/Employees/employeeSlice';
+import toast from 'react-hot-toast';
 
 const INITIAL_FORM_DATA = {
     JobNo: "",
@@ -90,7 +91,7 @@ const EmployeeSelectionModal = ({
     );
 };
 
-const TaskDetail = () => {
+const AllotedTask = () => {
 
     const [formData, setFormData] = useState<TASKINPTYPE>(INITIAL_FORM_DATA);
     const [editingIndex, setEditingIndex] = useState<boolean>(false);
@@ -107,7 +108,7 @@ const TaskDetail = () => {
     useEffect(() => {
         dispatch(getProjectHelpByTag("02"));
         dispatch(getAllJobDetails());
-        dispatch(getAllTaskDetails());
+        dispatch(getAllAllotedTaskDetails());
         dispatch(getAllEmployees());
     }, [dispatch]);
 
@@ -160,32 +161,33 @@ const TaskDetail = () => {
                 TaskStatus: formData?.TaskStatus ? formData?.TaskStatus : (projectHelps as ProjectHelpArrType[])?.[0]?.code,
                 StartTime: formData?.StartTime,
                 EndTime: formData?.EndTime,
-                Particulars: formData?.Particulars,
+                // Particulars: formData?.Particulars,
                 Remarks: formData?.Remarks,
-                JobTo: formData?.JobTo,
+                // JobTo: formData?.JobTo,
                 id: encodeURIComponent(taskDetail?.TaskId as any),
             };
             dispatch(updateTaskDetail(dataToEdit)).then(() => {
                 // Refresh the task detail table ...
-                dispatch(getAllTaskDetails());
+                dispatch(getAllAllotedTaskDetails());
             });
             setEditingIndex(!editingIndex);
         } else {
             // Add new task
-            const dataToSubmit = {
-                JobNo: formData?.JobNo ? String(formData?.JobNo) : String((jobDetails as JobDetailType[])?.[0]?.JobNo ?? ""),
-                TaskStatus: formData?.TaskStatus ? formData?.TaskStatus : (projectHelps as ProjectHelpArrType[])?.[0]?.code,
-                StartTime: formData?.StartTime,
-                EndTime: formData?.EndTime,
-                Particulars: formData?.Particulars,
-                Remarks: formData?.Remarks,
-                JobTo: formData?.JobTo,
-            };
+            // const dataToSubmit = {
+            //     JobNo: formData?.JobNo ? String(formData?.JobNo) : String((jobDetails as JobDetailType[])?.[0]?.JobNo ?? ""),
+            //     TaskStatus: formData?.TaskStatus ? formData?.TaskStatus : (projectHelps as ProjectHelpArrType[])?.[0]?.code,
+            //     StartTime: formData?.StartTime,
+            //     EndTime: formData?.EndTime,
+            //     Particulars: formData?.Particulars,
+            //     Remarks: formData?.Remarks,
+            //     JobTo: formData?.JobTo,
+            // };
 
-            dispatch(addTaskDetail(dataToSubmit as TASKINPTYPE)).then(() => {
-                // Refresh the task detail table ...
-                dispatch(getAllTaskDetails());
-            });
+            // dispatch(addTaskDetail(dataToSubmit as TASKINPTYPE)).then(() => {
+            //     // Refresh the task detail table ...
+            //     dispatch(getAllTaskDetails());
+            // });
+            toast.error("Please select a task before continue!!!");
         }
 
         // Reset form
@@ -311,6 +313,7 @@ const TaskDetail = () => {
                                             Job Number
                                         </label>
                                         <select
+                                            disabled={true}
                                             style={{
                                                 display: "block",
                                             }}
@@ -347,7 +350,7 @@ const TaskDetail = () => {
                                             />
                                             <button
                                                 type="button"
-                                                className="btn btn-outline-primary mx-2"
+                                                className="btn btn-outline-primary mx-2 d-none"
                                                 onClick={() => setEmployeeModalOpen(true)}
                                                 title="Select Employee"
                                             >
@@ -386,6 +389,7 @@ const TaskDetail = () => {
                                     <div className="col-md-6 my-3">
                                         <label htmlFor="Particulars" className="form-label">Task Description</label>
                                         <textarea
+                                            disabled={true}
                                             className="form-control"
                                             id="Particulars"
                                             name="Particulars"
@@ -399,7 +403,6 @@ const TaskDetail = () => {
                                     <div className="col-md-3 my-3">
                                         <label htmlFor="StartTime" className="form-label">Start Time</label>
                                         <input
-                                            disabled={true}
                                             type="time"
                                             className="form-control"
                                             id="StartTime"
@@ -413,7 +416,6 @@ const TaskDetail = () => {
                                     <div className="col-md-3 my-3">
                                         <label htmlFor="EndTime" className="form-label">End Time</label>
                                         <input
-                                            disabled={true}
                                             type="time"
                                             className="form-control"
                                             id="EndTime"
@@ -426,7 +428,6 @@ const TaskDetail = () => {
                                     <div className="col-md-6 my-3">
                                         <label htmlFor="TaskStatus" className="form-label">Task Status</label>
                                         <select
-                                            disabled={true}
                                             style={{
                                                 display: "block",
                                             }}
@@ -449,7 +450,6 @@ const TaskDetail = () => {
                                     <div className="col-md-6 my-3">
                                         <label htmlFor="Remarks" className="form-label">Remarks</label>
                                         <textarea
-                                            disabled={true}
                                             className="form-control"
                                             id="Remarks"
                                             name="Remarks"
@@ -465,7 +465,7 @@ const TaskDetail = () => {
                                         <div className="d-flex gap-2">
                                             <button type="submit" className="btn btn-primary">
                                                 <i className="bi bi-check-circle me-2"></i>
-                                                {editingIndex ? 'Update Task' : 'Create Task'}
+                                                {editingIndex ? 'Submit Task' : 'Submit Task'}
                                             </button>
                                             {editingIndex && (
                                                 <button type="button" className="btn btn-secondary mx-2" onClick={handleCancel}>
@@ -488,7 +488,7 @@ const TaskDetail = () => {
                         <div className="card-header bg-success text-white">
                             <h4 className="mb-0">
                                 <i className="bi bi-list-task me-2"></i>
-                                All Created Task List ({taskDetails.length} tasks)
+                                All Alloted Task List ({taskDetails.length} tasks)
                             </h4>
                         </div>
                         <div className="card-body p-0">
@@ -510,8 +510,9 @@ const TaskDetail = () => {
                                                 <th scope="col">End Time</th>
                                                 <th scope="col">Duration Min</th>
                                                 <th scope="col">Description</th>
+                                                <th scope="col">Remarks</th>
                                                 <th scope="col">Status</th>
-                                                <th scope="col" className="text-center d-none">Actions</th>
+                                                <th scope="col" className="text-center">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -530,6 +531,11 @@ const TaskDetail = () => {
                                                         </div>
                                                     </td>
                                                     <td>
+                                                        <div className="text-truncate" style={{ maxWidth: '200px' }} title={task.Particulars}>
+                                                            {task?.Remarks || "-"}
+                                                        </div>
+                                                    </td>
+                                                    <td>
                                                         <span className={`badge ${getStatusBadgeClass(task.status?.data)}`}>
                                                             {getStatusLabel(task.status?.data)}
                                                         </span>
@@ -538,12 +544,12 @@ const TaskDetail = () => {
                                                         <div className="btn-group btn-group-sm">
                                                             <button
                                                                 type="button"
-                                                                className="btn btn-outline-primary d-none"
+                                                                className="btn btn-outline-primary"
                                                                 onClick={() => handleEdit(task)}
                                                                 title="Edit task"
                                                             >
                                                                 <i className="bi bi-pencil"></i>
-                                                                Edit
+                                                                Start Work
                                                             </button>
                                                             <button
                                                                 type="button"
@@ -579,4 +585,4 @@ const TaskDetail = () => {
     );
 };
 
-export default TaskDetail;
+export default AllotedTask;

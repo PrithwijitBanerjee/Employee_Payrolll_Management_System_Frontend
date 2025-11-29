@@ -1,6 +1,6 @@
 import type { DepartmentType } from "@/@types/department";
 import Loader from "@/components/commons/Loader";
-import { addDepartment, getDepartmentById, updateDepartment } from "@/redux/Departments/departmentSlice";
+import { add_department_employee, addDepartment, getDepartmentById, updateDepartment } from "@/redux/Departments/departmentSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/store";
 import { STATUES } from "@/utils/Status";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
@@ -17,14 +17,14 @@ const INITIAL_FORM_DATA: DepartmentType = {
 
 const DepartmentForm = () => {
     const navigate = useNavigate();
-    const { isEdit, id } = useParams<{ isEdit?: string; id?: string }>();
+    const { isEdit, id, flag } = useParams<{ isEdit?: string; id?: string, flag?: boolean | any }>();
 
     const [formData, setFormData] = useState<DepartmentType>(INITIAL_FORM_DATA);
 
     const [loading, setLoading] = useState<boolean>(false);
     const dispatch = useAppDispatch();
     const { projectHelps } = useAppSelector(state => state?.projectHelp);
-    const { status, department } = useAppSelector(state => state?.department);
+    const { status, department, deptCode } = useAppSelector(state => state?.department);
 
     useEffect(() => {
         dispatch(getProjectHelpByTag("01"));
@@ -69,6 +69,12 @@ const DepartmentForm = () => {
                 return;
             }
             dispatch(addDepartment(formData));
+            if (flag) {
+                navigate("/employee/add");
+                if (deptCode) {
+                    dispatch(add_department_employee(deptCode));
+                }
+            }
 
             // Reset formData
             setFormData(INITIAL_FORM_DATA);
@@ -117,7 +123,7 @@ const DepartmentForm = () => {
                     {!isEdit ? (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Add Department
+                                Department
                             </h4>
                             <form onSubmit={handleSubmit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>
@@ -173,7 +179,7 @@ const DepartmentForm = () => {
                     ) : (
                         <div>
                             <h4 className='text-center' style={{ marginBottom: "20px" }}>
-                                Update Department
+                                Department
                             </h4>
                             <form onSubmit={handleEdit}>
                                 <div className='p-2' style={{ border: "1px solid #ccc", borderRadius: "10px" }}>

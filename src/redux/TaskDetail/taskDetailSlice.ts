@@ -12,6 +12,24 @@ const initialState: TaskDetailSlice = {
     taskDetails: [],
 };
 
+export const getAllManagedTaskDetails = createAsyncThunk<TaskDetailRespType, void>("user/managedTaskDetails/fetch/Job", async (_, { rejectWithValue }) => {
+    try {
+        const res = await HttpClients.getRequest<TaskDetailRespType>(Endpoints.getManagedTasks);
+        return res;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const getAllAllotedTaskDetails = createAsyncThunk<TaskDetailRespType, void>("user/allotedTaskDetails/fetch/Job", async (_, { rejectWithValue }) => {
+    try {
+        const res = await HttpClients.getRequest<TaskDetailRespType>(Endpoints.getAllotedTasks);
+        return res;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
 export const getAllTaskDetails = createAsyncThunk<TaskDetailRespType, void>("user/taskDetails/fetch/Job", async (_, { rejectWithValue }) => {
     try {
         const res = await HttpClients.getRequest<TaskDetailRespType>(Endpoints.getAllTasks);
@@ -42,6 +60,17 @@ export const addTaskDetail = createAsyncThunk<TaskDetailRespType, TASKINPTYPE>("
 export const updateTaskDetail = createAsyncThunk<TaskDetailRespType, UpdateTaskDetailType>("user/taskDetails/update/:id/Job", async ({ id, ...taskDetailData }, { rejectWithValue }) => {
     try {
         const res = await HttpClients.putRequest<TaskDetailRespType>(`${Endpoints.updateTask}/${id}`, {
+            ...taskDetailData,
+        });
+        return res;
+    } catch (error) {
+        return rejectWithValue(error);
+    }
+});
+
+export const rescheduleTaskDetail = createAsyncThunk<TaskDetailRespType, UpdateTaskDetailType>("user/rescheduleTaskDetails/update/:id/Job", async ({ id, ...taskDetailData }, { rejectWithValue }) => {
+    try {
+        const res = await HttpClients.putRequest<TaskDetailRespType>(`${Endpoints.addManageTask}/${id}`, {
             ...taskDetailData,
         });
         return res;
@@ -170,6 +199,76 @@ const taskDetailSlice = createSlice({
                 }
             })
             .addCase(deleteTaskDetail.rejected, (state, { payload }: PayloadAction<TaskDetailRespType | any>) => {
+                state.status = STATUES.ERROR;
+                state.error = payload?.message || null;
+                toast.error(payload.message || "Something Went Wrong!!!");
+            })
+
+            .addCase(getAllAllotedTaskDetails.pending, state => {
+                state.status = STATUES.LOADING;
+                state.error = null;
+                state.taskDetails = [];
+            })
+            .addCase(getAllAllotedTaskDetails.fulfilled, (state, { payload }: PayloadAction<TaskDetailRespType>) => {
+                if (payload.success && typeof payload.success === "boolean") {
+                    state.status = STATUES.IDLE;
+                    state.error = null;
+                    state.taskDetails = payload.data || [];
+                } else {
+                    state.status = STATUES.ERROR;
+                    state.error = payload.message || null;
+                    state.taskDetails = [];
+                    toast.error(payload.message || "Something Went Wrong!!!");
+                }
+            })
+            .addCase(getAllAllotedTaskDetails.rejected, (state, { payload }: PayloadAction<TaskDetailRespType | any>) => {
+                state.status = STATUES.ERROR;
+                state.error = payload?.message || null;
+                state.taskDetails = [];
+                toast.error(payload.message || "Something Went Wrong!!!");
+            })
+
+            .addCase(getAllManagedTaskDetails.pending, state => {
+                state.status = STATUES.LOADING;
+                state.error = null;
+                state.taskDetails = [];
+            })
+            .addCase(getAllManagedTaskDetails.fulfilled, (state, { payload }: PayloadAction<TaskDetailRespType>) => {
+                if (payload.success && typeof payload.success === "boolean") {
+                    state.status = STATUES.IDLE;
+                    state.error = null;
+                    state.taskDetails = payload.data || [];
+                } else {
+                    state.status = STATUES.ERROR;
+                    state.error = payload.message || null;
+                    state.taskDetails = [];
+                    toast.error(payload.message || "Something Went Wrong!!!");
+                }
+            })
+            .addCase(getAllManagedTaskDetails.rejected, (state, { payload }: PayloadAction<TaskDetailRespType | any>) => {
+                state.status = STATUES.ERROR;
+                state.error = payload?.message || null;
+                state.taskDetails = [];
+                toast.error(payload.message || "Something Went Wrong!!!");
+            })
+
+            .addCase(rescheduleTaskDetail.pending, state => {
+                state.status = STATUES.LOADING;
+                state.error = null;
+            })
+            .addCase(rescheduleTaskDetail.fulfilled, (state, { payload }: PayloadAction<TaskDetailRespType | any>) => {
+                if (payload.success && typeof payload.success === "boolean") {
+                    state.status = STATUES.IDLE;
+                    state.error = null;
+                    // toast.success(payload?.message || "Task has been updated successfully");
+                    toast.success("Task has been rescheduled successfully");
+                } else {
+                    state.status = STATUES.ERROR;
+                    state.error = payload.message || null;
+                    toast.error(payload.message || "Something Went Wrong!!!");
+                }
+            })
+            .addCase(rescheduleTaskDetail.rejected, (state, { payload }: PayloadAction<TaskDetailRespType | any>) => {
                 state.status = STATUES.ERROR;
                 state.error = payload?.message || null;
                 toast.error(payload.message || "Something Went Wrong!!!");
